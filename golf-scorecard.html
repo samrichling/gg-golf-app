@@ -58,13 +58,9 @@
             position: relative;
         }
 
-        .tab-button:hover {
-            background: #f3f4f6;
-        }
+        .tab-button:hover { background: #f3f4f6; }
 
-        .tab-button.active {
-            color: #1e3a8a;
-        }
+        .tab-button.active { color: #1e3a8a; }
 
         .tab-button.active::after {
             content: '';
@@ -76,25 +72,12 @@
             background: #1e3a8a;
         }
 
-        .content {
-            padding: 30px 20px;
-        }
+        .content { padding: 30px 20px; }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .screen { display: none; }
+        .screen.active { display: block; }
 
         .back-button {
             display: inline-block;
@@ -108,10 +91,7 @@
             font-weight: 600;
             transition: background 0.3s;
         }
-
-        .back-button:hover {
-            background: #d1d5db;
-        }
+        .back-button:hover { background: #d1d5db; }
 
         .league-grid {
             display: grid;
@@ -128,24 +108,13 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
         .league-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
             border-color: #1e3a8a;
         }
-
-        .league-card h3 {
-            color: #1e3a8a;
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-
-        .league-card p {
-            color: #374151;
-            font-size: 0.95em;
-            margin-bottom: 5px;
-        }
+        .league-card h3 { color: #1e3a8a; margin-bottom: 10px; font-size: 1.2em; }
+        .league-card p { color: #374151; font-size: 0.95em; margin-bottom: 5px; }
 
         .add-league-btn {
             padding: 20px;
@@ -156,21 +125,10 @@
             text-align: center;
             transition: all 0.3s;
         }
+        .add-league-btn:hover { background: #e0f2fe; }
+        .add-league-btn p { color: #1e3a8a; font-weight: 600; font-size: 1.1em; }
 
-        .add-league-btn:hover {
-            background: #e0f2fe;
-        }
-
-        .add-league-btn p {
-            color: #1e3a8a;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-
-        .dashboard {
-            display: grid;
-            gap: 30px;
-        }
+        .dashboard { display: grid; gap: 30px; }
 
         .dashboard-section {
             background: #f9fafb;
@@ -178,12 +136,7 @@
             border-radius: 8px;
             border-left: 4px solid #1e3a8a;
         }
-
-        .dashboard-section h2 {
-            color: #1e3a8a;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
+        .dashboard-section h2 { color: #1e3a8a; margin-bottom: 15px; font-size: 1.3em; }
 
         .stats-grid {
             display: grid;
@@ -197,20 +150,10 @@
             padding: 15px;
             border-radius: 6px;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-
-        .stat-label {
-            color: #6b7280;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            color: #1e3a8a;
-            font-size: 2em;
-            font-weight: 700;
-        }
+        .stat-label { color: #6b7280; font-size: 0.9em; margin-bottom: 5px; }
+        .stat-value { color: #1e3a8a; font-size: 2em; font-weight: 700; }
 
         .standings-table {
             width: 100%;
@@ -218,38 +161,23 @@
             background: white;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-
         .standings-table th, .standings-table td {
             padding: 12px 15px;
             text-align: center;
             border-bottom: 1px solid #e5e7eb;
         }
-
-        .standings-table th {
-            background: #1e3a8a;
-            color: white;
-            font-weight: 700;
-        }
-
-        .standings-table tbody tr:hover {
-            background: #f0f1ff;
-        }
-
-        .standings-table tbody tr:last-child td {
-            border-bottom: none;
-        }
+        .standings-table th { background: #1e3a8a; color: white; font-weight: 700; }
+        .standings-table tbody tr:hover { background: #f0f1ff; }
+        .standings-table tbody tr:last-child td { border-bottom: none; }
 
         .rank-1 { font-weight: 700; }
         .rank-1 td:first-child::before { content: '🥇 '; }
         .rank-2 td:first-child::before { content: '🥈 '; }
         .rank-3 td:first-child::before { content: '🥉 '; }
 
-        .round-history {
-            max-height: 400px;
-            overflow-y: auto;
-        }
+        .round-history { max-height: 400px; overflow-y: auto; }
 
         .round-entry {
             padding: 15px;
@@ -258,18 +186,8 @@
             border-radius: 6px;
             margin-bottom: 10px;
         }
-
-        .round-entry-title {
-            font-weight: 600;
-            color: #1e3a8a;
-            margin-bottom: 8px;
-        }
-
-        .round-entry-detail {
-            color: #6b7280;
-            font-size: 0.95em;
-            margin-bottom: 4px;
-        }
+        .round-entry-title { font-weight: 600; color: #1e3a8a; margin-bottom: 8px; }
+        .round-entry-detail { color: #6b7280; font-size: 0.95em; margin-bottom: 4px; }
 
         .play-round-btn {
             display: inline-block;
@@ -284,10 +202,7 @@
             font-size: 1.1em;
             transition: background 0.3s;
         }
-
-        .play-round-btn:hover {
-            background: #059669;
-        }
+        .play-round-btn:hover { background: #059669; }
 
         .input-group {
             display: flex;
@@ -295,13 +210,7 @@
             gap: 5px;
             margin-bottom: 15px;
         }
-
-        .input-group label {
-            font-weight: 600;
-            color: #374151;
-            font-size: 0.9em;
-        }
-
+        .input-group label { font-weight: 600; color: #374151; font-size: 0.9em; }
         .input-group input {
             padding: 10px;
             border: 2px solid #d1d5db;
@@ -309,7 +218,6 @@
             font-size: 1em;
             transition: border-color 0.3s;
         }
-
         .input-group input:focus {
             outline: none;
             border-color: #1e3a8a;
@@ -326,16 +234,9 @@
             gap: 15px;
         }
 
-        .scorecard {
-            overflow-x: auto;
-            margin-bottom: 30px;
-        }
+        .scorecard { overflow-x: auto; margin-bottom: 30px; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
+        table { width: 100%; border-collapse: collapse; background: white; }
 
         th, td {
             padding: 12px 8px;
@@ -343,24 +244,10 @@
             border: 1px solid #e5e7eb;
             font-weight: 600;
         }
-
-        th {
-            background: #1e3a8a;
-            color: white;
-            font-size: 0.95em;
-        }
-
-        td {
-            font-size: 0.95em;
-        }
-
-        tr:nth-child(even) {
-            background: #f9fafb;
-        }
-
-        tr:hover {
-            background: #f0f1ff;
-        }
+        th { background: #1e3a8a; color: white; font-size: 0.95em; }
+        td { font-size: 0.95em; }
+        tr:nth-child(even) { background: #f9fafb; }
+        tr:hover { background: #f0f1ff; }
 
         .hole-input {
             width: 50px;
@@ -371,11 +258,7 @@
             text-align: center;
             transition: border-color 0.3s;
         }
-
-        .hole-input:focus {
-            outline: none;
-            border-color: #1e3a8a;
-        }
+        .hole-input:focus { outline: none; border-color: #1e3a8a; }
 
         .total-row {
             font-weight: 700;
@@ -401,10 +284,7 @@
             font-size: 1.05em;
             transition: background 0.3s;
         }
-
-        .btn-primary:hover {
-            background: #059669;
-        }
+        .btn-primary:hover { background: #059669; }
 
         .btn-secondary {
             flex: 1;
@@ -418,10 +298,7 @@
             font-size: 1.05em;
             transition: background 0.3s;
         }
-
-        .btn-secondary:hover {
-            background: #dc2626;
-        }
+        .btn-secondary:hover { background: #dc2626; }
 
         .team-label {
             background: #dbeafe;
@@ -435,37 +312,27 @@
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
             z-index: 1000;
             align-items: center;
             justify-content: center;
         }
-
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
 
         .modal-content {
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             max-width: 500px;
             width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
-
-        .modal-content h2 {
-            color: #1e3a8a;
-            margin-bottom: 20px;
-        }
-
-        .modal-content .button-group {
-            margin-top: 20px;
-        }
+        .modal-content h2 { color: #1e3a8a; margin-bottom: 20px; }
+        .modal-content .button-group { margin-top: 20px; }
 
         .player-select {
             display: grid;
@@ -473,18 +340,13 @@
             gap: 15px;
             margin-bottom: 15px;
         }
-
         .player-select select {
             padding: 10px;
             border: 2px solid #d1d5db;
             border-radius: 6px;
             font-size: 1em;
         }
-
-        .player-select select:focus {
-            outline: none;
-            border-color: #1e3a8a;
-        }
+        .player-select select:focus { outline: none; border-color: #1e3a8a; }
 
         .vs-text {
             display: flex;
@@ -493,6 +355,118 @@
             font-weight: 700;
             color: #1e3a8a;
             grid-column: 1 / -1;
+        }
+
+        /* Course selection styles */
+        .course-search-box {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        .course-search-box:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .course-list { display: grid; gap: 12px; margin-bottom: 20px; }
+
+        .course-card {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #bbf7d0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+        .course-card-name { font-weight: 700; color: #065f46; font-size: 1.05em; }
+        .course-card-meta { color: #6b7280; font-size: 0.9em; margin-top: 3px; }
+        .course-card-par {
+            background: #1e3a8a;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+
+        .add-course-btn {
+            width: 100%;
+            padding: 16px;
+            background: #f0f9ff;
+            border: 2px dashed #1e3a8a;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            color: #1e3a8a;
+            font-weight: 600;
+            font-size: 1.05em;
+            transition: all 0.3s;
+        }
+        .add-course-btn:hover { background: #e0f2fe; }
+
+        .par-inputs-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+        .par-inputs-grid label {
+            text-align: center;
+            font-size: 0.8em;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        .par-inputs-grid input {
+            padding: 6px 4px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.95em;
+            text-align: center;
+            width: 100%;
+        }
+        .par-inputs-grid input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+
+        .par-section-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            margin-top: 12px;
+            font-size: 0.95em;
+        }
+
+        .current-course-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+        }
+
+        .no-courses-msg {
+            text-align: center;
+            color: #9ca3af;
+            padding: 30px;
+            font-size: 1.05em;
         }
     </style>
 </head>
@@ -509,35 +483,29 @@
         </div>
 
         <div class="content">
+
             <!-- SCRAMBLE TAB -->
             <div id="scramble" class="tab-content active">
-                <!-- League Selection Screen -->
+
                 <div id="scramble-league-select" class="screen active">
-                    <h2 style="color: #1e3a8a; margin-bottom: 20px;">Select or Create a League</h2>
+                    <h2 style="color:#1e3a8a;margin-bottom:20px;">Select or Create a League</h2>
                     <div class="league-grid" id="scramble-leagues"></div>
                     <div class="add-league-btn" onclick="showCreateScrambleLeague()">
                         <p>+ Create New League</p>
                     </div>
                 </div>
 
-                <!-- League Dashboard Screen -->
                 <div id="scramble-dashboard" class="screen">
                     <button class="back-button" onclick="showScrambleLeagueSelect()">← Back to Leagues</button>
-
-                    <h1 id="scramble-dashboard-title" style="color: #1e3a8a; margin-bottom: 25px;"></h1>
-
+                    <h1 id="scramble-dashboard-title" style="color:#1e3a8a;margin-bottom:25px;"></h1>
                     <div class="dashboard">
-                        <!-- Stats -->
                         <div class="dashboard-section">
                             <h2>Standings</h2>
                             <div class="stats-grid" id="scramble-stats"></div>
                             <table class="standings-table">
                                 <thead>
                                     <tr>
-                                        <th>Rank</th>
-                                        <th>Team</th>
-                                        <th>Points</th>
-                                        <th>Rounds</th>
+                                        <th>Rank</th><th>Team</th><th>Points</th><th>Rounds</th>
                                     </tr>
                                 </thead>
                                 <tbody id="scramble-standings-body">
@@ -545,37 +513,45 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <!-- History -->
                         <div class="dashboard-section">
                             <h2>Round History</h2>
                             <div class="round-history" id="scramble-history-list"></div>
                         </div>
-
-                        <button class="play-round-btn" onclick="showScrambleScorecard()">▶ Play New Round</button>
+                        <button class="play-round-btn" onclick="showScrambleCourseSelect()">▶ Play New Round</button>
                     </div>
                 </div>
 
-                <!-- Scorecard Screen -->
-                <div id="scramble-scorecard" class="screen">
+                <!-- Course Selection Screen (Scramble) -->
+                <div id="scramble-course-select" class="screen">
                     <button class="back-button" onclick="showScrambleDashboard()">← Back to Dashboard</button>
+                    <h2 style="color:#1e3a8a;margin-bottom:6px;">Select a Course</h2>
+                    <p style="color:#6b7280;margin-bottom:20px;">Choose the course you're playing today</p>
+                    <input type="text" class="course-search-box" id="scramble-course-search"
+                        placeholder="🔍  Search courses..." oninput="renderCourseList('scramble')">
+                    <div class="course-list" id="scramble-course-list"></div>
+                    <button class="add-course-btn" onclick="openAddCourseModal('scramble')">+ Add New Course</button>
+                </div>
+
+                <div id="scramble-scorecard" class="screen">
+                    <button class="back-button" onclick="showScrambleCourseSelect()">← Change Course</button>
+                    <div id="scramble-course-badge"></div>
 
                     <div class="player-inputs">
                         <div class="input-group">
                             <label id="scramble-sc-t1p1-label"></label>
-                            <input type="text" id="scramble-sc-t1p1" disabled style="background: #f3f4f6;">
+                            <input type="text" id="scramble-sc-t1p1" disabled style="background:#f3f4f6;">
                         </div>
                         <div class="input-group">
                             <label id="scramble-sc-t1p2-label"></label>
-                            <input type="text" id="scramble-sc-t1p2" disabled style="background: #f3f4f6;">
+                            <input type="text" id="scramble-sc-t1p2" disabled style="background:#f3f4f6;">
                         </div>
                         <div class="input-group">
                             <label id="scramble-sc-t2p1-label"></label>
-                            <input type="text" id="scramble-sc-t2p1" disabled style="background: #f3f4f6;">
+                            <input type="text" id="scramble-sc-t2p1" disabled style="background:#f3f4f6;">
                         </div>
                         <div class="input-group">
                             <label id="scramble-sc-t2p2-label"></label>
-                            <input type="text" id="scramble-sc-t2p2" disabled style="background: #f3f4f6;">
+                            <input type="text" id="scramble-sc-t2p2" disabled style="background:#f3f4f6;">
                         </div>
                     </div>
 
@@ -602,28 +578,22 @@
 
             <!-- STROKE PLAY TAB -->
             <div id="strokeplay" class="tab-content">
-                <!-- League Selection Screen -->
+
                 <div id="strokeplay-league-select" class="screen active">
-                    <h2 style="color: #1e3a8a; margin-bottom: 20px;">Select a League</h2>
+                    <h2 style="color:#1e3a8a;margin-bottom:20px;">Select a League</h2>
                     <div class="league-grid" id="strokeplay-leagues"></div>
                 </div>
 
-                <!-- League Dashboard -->
                 <div id="strokeplay-dashboard" class="screen">
                     <button class="back-button" onclick="showStrokePlayLeagueSelect()">← Back to Leagues</button>
-                    <h1 id="strokeplay-dashboard-title" style="color: #1e3a8a; margin-bottom: 25px;"></h1>
-
+                    <h1 id="strokeplay-dashboard-title" style="color:#1e3a8a;margin-bottom:25px;"></h1>
                     <div class="dashboard">
-                        <!-- Stats -->
                         <div class="dashboard-section">
                             <h2>Standings</h2>
                             <table class="standings-table">
                                 <thead>
                                     <tr>
-                                        <th>Rank</th>
-                                        <th>Player</th>
-                                        <th>Points</th>
-                                        <th>Rounds</th>
+                                        <th>Rank</th><th>Player</th><th>Points</th><th>Rounds</th>
                                     </tr>
                                 </thead>
                                 <tbody id="stroke-standings-body">
@@ -631,20 +601,28 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <!-- History -->
                         <div class="dashboard-section">
                             <h2>Round History</h2>
                             <div class="round-history" id="stroke-history-list"></div>
                         </div>
-
-                        <button class="play-round-btn" onclick="showStrokePlayScorecard()">▶ Play New Round</button>
+                        <button class="play-round-btn" onclick="showStrokePlayCourseSelect()">▶ Play New Round</button>
                     </div>
                 </div>
 
-                <!-- Scorecard Screen -->
-                <div id="strokeplay-scorecard" class="screen">
+                <!-- Course Selection Screen (Stroke Play) -->
+                <div id="strokeplay-course-select" class="screen">
                     <button class="back-button" onclick="showStrokePlayDashboard()">← Back to Dashboard</button>
+                    <h2 style="color:#1e3a8a;margin-bottom:6px;">Select a Course</h2>
+                    <p style="color:#6b7280;margin-bottom:20px;">Choose the course you're playing today</p>
+                    <input type="text" class="course-search-box" id="strokeplay-course-search"
+                        placeholder="🔍  Search courses..." oninput="renderCourseList('strokeplay')">
+                    <div class="course-list" id="strokeplay-course-list"></div>
+                    <button class="add-course-btn" onclick="openAddCourseModal('strokeplay')">+ Add New Course</button>
+                </div>
+
+                <div id="strokeplay-scorecard" class="screen">
+                    <button class="back-button" onclick="showStrokePlayCourseSelect()">← Change Course</button>
+                    <div id="strokeplay-course-badge"></div>
 
                     <div class="player-inputs">
                         <div class="input-group">
@@ -690,7 +668,7 @@
         </div>
     </div>
 
-    <!-- Create League Modal -->
+    <!-- Create Scramble League Modal -->
     <div id="create-league-modal" class="modal">
         <div class="modal-content">
             <h2>Create New Scramble League</h2>
@@ -698,17 +676,13 @@
                 <label>League Name</label>
                 <input type="text" id="league-name-input" placeholder="e.g., Mason & Sam vs Sean & Jonah">
             </div>
-            <div class="input-group">
-                <label>Team 1 Players</label>
-            </div>
+            <div class="input-group"><label>Team 1 Players</label></div>
             <div class="player-select">
                 <select id="league-t1p1"></select>
                 <select id="league-t1p2"></select>
             </div>
             <div class="vs-text">vs</div>
-            <div class="input-group">
-                <label>Team 2 Players</label>
-            </div>
+            <div class="input-group"><label>Team 2 Players</label></div>
             <div class="player-select">
                 <select id="league-t2p1"></select>
                 <select id="league-t2p2"></select>
@@ -720,37 +694,98 @@
         </div>
     </div>
 
+    <!-- Add Course Modal -->
+    <div id="add-course-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Course</h2>
+            <div class="input-group">
+                <label>Course Name</label>
+                <input type="text" id="new-course-name" placeholder="e.g., Pebble Beach Golf Links">
+            </div>
+            <div class="input-group">
+                <label>Location (optional)</label>
+                <input type="text" id="new-course-location" placeholder="e.g., Pebble Beach, CA">
+            </div>
+
+            <div class="par-section-label">Front 9 — Hole Pars</div>
+            <div class="par-inputs-grid" id="front9-par-inputs"></div>
+
+            <div class="par-section-label">Back 9 — Hole Pars</div>
+            <div class="par-inputs-grid" id="back9-par-inputs"></div>
+
+            <div class="button-group">
+                <button class="btn-secondary" onclick="closeAddCourseModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveNewCourse()">Save Course</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const par = [4, 4, 3, 5, 4, 3, 4, 5, 4, 4, 3, 4, 5, 4, 3, 4, 4, 5];
+        // ─── Default par (used as fallback) ───────────────────────────────────
+        const DEFAULT_PAR = [4,4,3,5,4,3,4,5,4,4,3,4,5,4,3,4,4,5];
+
+        // ─── Built-in courses ─────────────────────────────────────────────────
+        const BUILTIN_COURSES = [
+            {
+                id: 'pebble-beach',
+                name: 'Pebble Beach Golf Links',
+                location: 'Pebble Beach, CA',
+                par: [4,5,4,4,3,5,3,4,4,4,4,3,4,5,4,3,3,5]
+            },
+            {
+                id: 'augusta',
+                name: 'Augusta National Golf Club',
+                location: 'Augusta, GA',
+                par: [4,5,4,3,4,3,4,5,4,4,4,3,5,4,5,3,4,4]
+            },
+            {
+                id: 'tpc-sawgrass',
+                name: 'TPC Sawgrass (Stadium)',
+                location: 'Ponte Vedra Beach, FL',
+                par: [4,5,3,4,4,4,4,3,5,4,4,3,4,4,5,3,4,4]
+            },
+            {
+                id: 'bethpage-black',
+                name: 'Bethpage Black',
+                location: 'Farmingdale, NY',
+                par: [4,4,3,5,4,4,4,3,4,4,4,4,5,3,4,4,3,4]
+            },
+            {
+                id: 'torrey-pines-south',
+                name: 'Torrey Pines (South)',
+                location: 'La Jolla, CA',
+                par: [4,4,3,4,4,3,4,3,5,4,4,3,5,4,4,5,3,4]
+            }
+        ];
+
         const allPlayers = ['Mason', 'Sam', 'Sean', 'Jonah'];
         const SCRAMBLE_POINTS = { win: 10, loss: 5 };
         const STROKE_PLAY_POINTS = { 1: 10, 2: 8, 3: 6, 4: 4 };
 
         let currentScrambleLeagueId = null;
         let currentStrokePlayLeagueId = null;
+        let selectedCourseFor = null; // 'scramble' | 'strokeplay'
+        let activeCourse = { scramble: null, strokeplay: null };
 
+        // ─── Data helpers ─────────────────────────────────────────────────────
         function loadData() {
             const saved = localStorage.getItem('golfData');
             return saved ? JSON.parse(saved) : {
-                scrambleLeagues: [
-                    {
-                        id: Date.now(),
-                        name: 'Mason & Sam vs Sean & Jonah',
-                        team1: ['Mason', 'Sam'],
-                        team2: ['Sean', 'Jonah'],
-                        standings: [],
-                        history: []
-                    }
-                ],
-                strokePlayLeagues: [
-                    {
-                        id: Date.now() + 1,
-                        name: 'Mini Majors',
-                        players: ['Mason', 'Sam', 'Sean', 'Jonah'],
-                        standings: [],
-                        history: []
-                    }
-                ]
+                scrambleLeagues: [{
+                    id: Date.now(),
+                    name: 'Mason & Sam vs Sean & Jonah',
+                    team1: ['Mason', 'Sam'],
+                    team2: ['Sean', 'Jonah'],
+                    standings: [],
+                    history: []
+                }],
+                strokePlayLeagues: [{
+                    id: Date.now() + 1,
+                    name: 'Mini Majors',
+                    players: ['Mason', 'Sam', 'Sean', 'Jonah'],
+                    standings: [],
+                    history: []
+                }]
             };
         }
 
@@ -758,38 +793,145 @@
             localStorage.setItem('golfData', JSON.stringify(data));
         }
 
+        function loadCustomCourses() {
+            const saved = localStorage.getItem('customCourses');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function saveCustomCourses(courses) {
+            localStorage.setItem('customCourses', JSON.stringify(courses));
+        }
+
+        function getAllCourses() {
+            return [...BUILTIN_COURSES, ...loadCustomCourses()];
+        }
+
+        // ─── Tab switching ────────────────────────────────────────────────────
         function switchTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
             document.getElementById(tab).classList.add('active');
             event.target.classList.add('active');
-
-            if (tab === 'scramble') {
-                showScrambleLeagueSelect();
-            } else if (tab === 'strokeplay') {
-                showStrokePlayLeagueSelect();
-            }
+            if (tab === 'scramble') showScrambleLeagueSelect();
+            else showStrokePlayLeagueSelect();
         }
 
-        // SCRAMBLE FUNCTIONS
+        // ─── Course selection ─────────────────────────────────────────────────
+        function showScrambleCourseSelect() {
+            setScreen('scramble', 'scramble-course-select');
+            document.getElementById('scramble-course-search').value = '';
+            renderCourseList('scramble');
+        }
+
+        function showStrokePlayCourseSelect() {
+            setScreen('strokeplay', 'strokeplay-course-select');
+            document.getElementById('strokeplay-course-search').value = '';
+            renderCourseList('strokeplay');
+        }
+
+        function renderCourseList(tab) {
+            const query = document.getElementById(`${tab}-course-search`).value.toLowerCase();
+            const courses = getAllCourses().filter(c =>
+                c.name.toLowerCase().includes(query) ||
+                (c.location && c.location.toLowerCase().includes(query))
+            );
+
+            const container = document.getElementById(`${tab}-course-list`);
+
+            if (courses.length === 0) {
+                container.innerHTML = `<div class="no-courses-msg">No courses found — add one below!</div>`;
+                return;
+            }
+
+            container.innerHTML = courses.map(c => `
+                <div class="course-card" onclick="selectCourse('${tab}', '${c.id}')">
+                    <div>
+                        <div class="course-card-name">${c.name}</div>
+                        <div class="course-card-meta">${c.location || ''}</div>
+                    </div>
+                    <div class="course-card-par">Par ${c.par.reduce((a,b) => a+b, 0)}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectCourse(tab, courseId) {
+            const course = getAllCourses().find(c => c.id === courseId);
+            if (!course) return;
+            activeCourse[tab] = course;
+            if (tab === 'scramble') showScrambleScorecard();
+            else showStrokePlayScorecard();
+        }
+
+        // ─── Add Course Modal ─────────────────────────────────────────────────
+        function openAddCourseModal(tab) {
+            selectedCourseFor = tab;
+            document.getElementById('new-course-name').value = '';
+            document.getElementById('new-course-location').value = '';
+
+            const front = document.getElementById('front9-par-inputs');
+            const back = document.getElementById('back9-par-inputs');
+            front.innerHTML = '';
+            back.innerHTML = '';
+
+            for (let i = 1; i <= 9; i++) {
+                front.innerHTML += `<div><label>${i}</label><input type="number" id="par-h${i}" min="3" max="6" value="4"></div>`;
+            }
+            for (let i = 10; i <= 18; i++) {
+                back.innerHTML += `<div><label>${i}</label><input type="number" id="par-h${i}" min="3" max="6" value="4"></div>`;
+            }
+
+            document.getElementById('add-course-modal').classList.add('active');
+        }
+
+        function closeAddCourseModal() {
+            document.getElementById('add-course-modal').classList.remove('active');
+        }
+
+        function saveNewCourse() {
+            const name = document.getElementById('new-course-name').value.trim();
+            if (!name) { alert('Please enter a course name'); return; }
+
+            const par = [];
+            for (let i = 1; i <= 18; i++) {
+                const val = parseInt(document.getElementById(`par-h${i}`).value);
+                if (!val || val < 3 || val > 6) { alert(`Invalid par for hole ${i}`); return; }
+                par.push(val);
+            }
+
+            const course = {
+                id: 'custom-' + Date.now(),
+                name,
+                location: document.getElementById('new-course-location').value.trim(),
+                par
+            };
+
+            const custom = loadCustomCourses();
+            custom.push(course);
+            saveCustomCourses(custom);
+
+            closeAddCourseModal();
+            selectCourse(selectedCourseFor, course.id);
+        }
+
+        // ─── Screen helpers ───────────────────────────────────────────────────
+        function setScreen(tab, screenId) {
+            document.querySelectorAll(`#${tab} .screen`).forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // ─── Scramble screens ─────────────────────────────────────────────────
         function showScrambleLeagueSelect() {
-            document.getElementById('scramble-league-select').classList.add('active');
-            document.getElementById('scramble-dashboard').classList.remove('active');
-            document.getElementById('scramble-scorecard').classList.remove('active');
+            setScreen('scramble', 'scramble-league-select');
             renderScrambleLeagues();
         }
 
         function showScrambleDashboard() {
-            document.getElementById('scramble-league-select').classList.remove('active');
-            document.getElementById('scramble-dashboard').classList.add('active');
-            document.getElementById('scramble-scorecard').classList.remove('active');
+            setScreen('scramble', 'scramble-dashboard');
             updateScrambleDashboard();
         }
 
         function showScrambleScorecard() {
-            document.getElementById('scramble-league-select').classList.remove('active');
-            document.getElementById('scramble-dashboard').classList.remove('active');
-            document.getElementById('scramble-scorecard').classList.add('active');
+            setScreen('scramble', 'scramble-scorecard');
             initScrambleScorecard();
         }
 
@@ -801,7 +943,7 @@
                     <h3>${league.name}</h3>
                     <p><strong>Team 1:</strong> ${league.team1.join(' & ')}</p>
                     <p><strong>Team 2:</strong> ${league.team2.join(' & ')}</p>
-                    <p style="margin-top: 10px; font-size: 0.9em; color: #059669;"><strong>${league.standings.length}</strong> round(s) played</p>
+                    <p style="margin-top:10px;font-size:0.9em;color:#059669;"><strong>${league.standings.length}</strong> round(s) played</p>
                 </div>
             `).join('');
         }
@@ -814,69 +956,64 @@
         function updateScrambleDashboard() {
             const data = loadData();
             const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
-
             if (!league) return;
 
             document.getElementById('scramble-dashboard-title').textContent = league.name;
-
-            // Stats
-            const statsHTML = `
+            document.getElementById('scramble-stats').innerHTML = `
                 <div class="stat-box">
                     <div class="stat-label">Total Rounds</div>
                     <div class="stat-value">${league.history.length}</div>
                 </div>
             `;
-            document.getElementById('scramble-stats').innerHTML = statsHTML;
 
-            // Standings
-            const standings = [...league.standings].sort((a, b) => b.points - a.points || b.rounds - a.rounds);
-            const standingsHTML = standings.length === 0
-                ? '<tr><td colspan="4" style="text-align: center; color: #9ca3af;">No rounds recorded yet</td></tr>'
+            const standings = [...league.standings].sort((a,b) => b.points - a.points || b.rounds - a.rounds);
+            document.getElementById('scramble-standings-body').innerHTML = standings.length === 0
+                ? '<tr><td colspan="4" style="text-align:center;color:#9ca3af;">No rounds recorded yet</td></tr>'
                 : standings.map((team, idx) => `
-                    <tr class="rank-${idx + 1}">
-                        <td>${idx + 1}</td>
+                    <tr class="rank-${idx+1}">
+                        <td>${idx+1}</td>
                         <td>${team.name}</td>
-                        <td style="font-weight: 700; color: #1e3a8a;">${team.points}</td>
+                        <td style="font-weight:700;color:#1e3a8a;">${team.points}</td>
                         <td>${team.rounds}</td>
                     </tr>
                 `).join('');
-            document.getElementById('scramble-standings-body').innerHTML = standingsHTML;
 
-            // History
-            const historyHTML = league.history.length === 0
-                ? '<p style="color: #9ca3af;">No rounds played yet</p>'
-                : league.history.map(round => `
+            document.getElementById('scramble-history-list').innerHTML = league.history.length === 0
+                ? '<p style="color:#9ca3af;">No rounds played yet</p>'
+                : [...league.history].reverse().map(round => `
                     <div class="round-entry">
-                        <div class="round-entry-title">${round.date}</div>
+                        <div class="round-entry-title">${round.date}${round.course ? ' — ' + round.course : ''}</div>
                         <div class="round-entry-detail">${round.team1} (${round.team1Score}): <strong>${round.team1Points} pts</strong></div>
                         <div class="round-entry-detail">${round.team2} (${round.team2Score}): <strong>${round.team2Points} pts</strong></div>
-                        <div class="round-entry-detail" style="margin-top: 8px; color: #059669; font-weight: 600;">Winner: ${round.winner}</div>
+                        <div class="round-entry-detail" style="margin-top:8px;color:#059669;font-weight:600;">Winner: ${round.winner}</div>
                     </div>
-                `).reverse().join('');
-            document.getElementById('scramble-history-list').innerHTML = historyHTML;
+                `).join('');
         }
 
         function initScrambleScorecard() {
             const data = loadData();
             const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
-
             if (!league) return;
 
-            // Set player labels
+            const course = activeCourse.scramble;
+            const par = course ? course.par : DEFAULT_PAR;
+
+            const badge = document.getElementById('scramble-course-badge');
+            badge.innerHTML = course
+                ? `<span class="current-course-badge">⛳ ${course.name}</span>`
+                : '';
+
             document.getElementById('scramble-sc-t1p1-label').textContent = 'Team 1: ' + league.team1[0];
             document.getElementById('scramble-sc-t1p2-label').textContent = 'Team 1: ' + league.team1[1];
             document.getElementById('scramble-sc-t2p1-label').textContent = 'Team 2: ' + league.team2[0];
             document.getElementById('scramble-sc-t2p2-label').textContent = 'Team 2: ' + league.team2[1];
-
             document.getElementById('scramble-sc-t1p1').value = league.team1[0];
             document.getElementById('scramble-sc-t1p2').value = league.team1[1];
             document.getElementById('scramble-sc-t2p1').value = league.team2[0];
             document.getElementById('scramble-sc-t2p2').value = league.team2[1];
-
             document.getElementById('scramble-sc-team1-header').textContent = league.team1.join(' & ');
             document.getElementById('scramble-sc-team2-header').textContent = league.team2.join(' & ');
 
-            // Build scorecard
             const tbody = document.getElementById('scramble-scorecard-body');
             tbody.innerHTML = '';
 
@@ -886,16 +1023,15 @@
                     frontRow.className = 'total-row';
                     frontRow.innerHTML = `
                         <td>Front 9</td>
-                        <td>${par.slice(0, 9).reduce((a, b) => a + b, 0)}</td>
+                        <td>${par.slice(0,9).reduce((a,b) => a+b, 0)}</td>
                         <td><strong id="scramble-front-t1">0</strong></td>
                         <td><strong id="scramble-front-t2">0</strong></td>
                     `;
                     tbody.appendChild(frontRow);
                 }
-
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${i + 1}</td>
+                    <td>${i+1}</td>
                     <td>${par[i]}</td>
                     <td><input type="number" class="hole-input" data-hole="${i}" data-team="1" onchange="updateScramblesScorecard()"></td>
                     <td><input type="number" class="hole-input" data-hole="${i}" data-team="2" onchange="updateScramblesScorecard()"></td>
@@ -907,7 +1043,7 @@
             backRow.className = 'total-row';
             backRow.innerHTML = `
                 <td>Back 9</td>
-                <td>${par.slice(9, 18).reduce((a, b) => a + b, 0)}</td>
+                <td>${par.slice(9,18).reduce((a,b) => a+b, 0)}</td>
                 <td><strong id="scramble-back-t1">0</strong></td>
                 <td><strong id="scramble-back-t2">0</strong></td>
             `;
@@ -917,7 +1053,7 @@
             totalRow.className = 'total-row';
             totalRow.innerHTML = `
                 <td>TOTAL</td>
-                <td>${par.reduce((a, b) => a + b, 0)}</td>
+                <td>${par.reduce((a,b) => a+b, 0)}</td>
                 <td><strong id="scramble-total-t1">0</strong></td>
                 <td><strong id="scramble-total-t2">0</strong></td>
             `;
@@ -925,104 +1061,65 @@
         }
 
         function updateScramblesScorecard() {
-            const team1Scores = [];
-            const team2Scores = [];
+            const t1 = [], t2 = [];
+            document.querySelectorAll('#scramble-scorecard input[data-team="1"]').forEach(i => { if (i.value) t1.push(parseInt(i.value)); });
+            document.querySelectorAll('#scramble-scorecard input[data-team="2"]').forEach(i => { if (i.value) t2.push(parseInt(i.value)); });
 
-            document.querySelectorAll('#scramble-scorecard input[data-team="1"]').forEach(input => {
-                const val = input.value ? parseInt(input.value) : null;
-                if (val !== null) team1Scores.push(val);
-            });
-
-            document.querySelectorAll('#scramble-scorecard input[data-team="2"]').forEach(input => {
-                const val = input.value ? parseInt(input.value) : null;
-                if (val !== null) team2Scores.push(val);
-            });
-
-            const team1Front = team1Scores.slice(0, 9).reduce((a, b) => a + b, 0);
-            const team2Front = team2Scores.slice(0, 9).reduce((a, b) => a + b, 0);
-            document.getElementById('scramble-front-t1').textContent = team1Front || 0;
-            document.getElementById('scramble-front-t2').textContent = team2Front || 0;
-
-            const team1Back = team1Scores.slice(9, 18).reduce((a, b) => a + b, 0);
-            const team2Back = team2Scores.slice(9, 18).reduce((a, b) => a + b, 0);
-            document.getElementById('scramble-back-t1').textContent = team1Back || 0;
-            document.getElementById('scramble-back-t2').textContent = team2Back || 0;
-
-            const team1Total = team1Scores.reduce((a, b) => a + b, 0);
-            const team2Total = team2Scores.reduce((a, b) => a + b, 0);
-            document.getElementById('scramble-total-t1').textContent = team1Total || 0;
-            document.getElementById('scramble-total-t2').textContent = team2Total || 0;
+            document.getElementById('scramble-front-t1').textContent = t1.slice(0,9).reduce((a,b)=>a+b,0)||0;
+            document.getElementById('scramble-front-t2').textContent = t2.slice(0,9).reduce((a,b)=>a+b,0)||0;
+            document.getElementById('scramble-back-t1').textContent  = t1.slice(9,18).reduce((a,b)=>a+b,0)||0;
+            document.getElementById('scramble-back-t2').textContent  = t2.slice(9,18).reduce((a,b)=>a+b,0)||0;
+            document.getElementById('scramble-total-t1').textContent = t1.reduce((a,b)=>a+b,0)||0;
+            document.getElementById('scramble-total-t2').textContent = t2.reduce((a,b)=>a+b,0)||0;
         }
 
         function resetScrambleScorecard() {
-            document.querySelectorAll('#scramble-scorecard input[type="number"]').forEach(input => input.value = '');
+            document.querySelectorAll('#scramble-scorecard input[type="number"]').forEach(i => i.value = '');
             updateScramblesScorecard();
         }
 
         function recordScrambleRound() {
             const data = loadData();
             const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
-
             if (!league) return;
 
-            const team1Scores = [];
-            const team2Scores = [];
+            const t1Scores = [], t2Scores = [];
+            document.querySelectorAll('#scramble-scorecard input[data-team="1"]').forEach(i => { if (i.value) t1Scores.push(parseInt(i.value)); });
+            document.querySelectorAll('#scramble-scorecard input[data-team="2"]').forEach(i => { if (i.value) t2Scores.push(parseInt(i.value)); });
 
-            document.querySelectorAll('#scramble-scorecard input[data-team="1"]').forEach(input => {
-                const val = input.value ? parseInt(input.value) : null;
-                if (val !== null) team1Scores.push(val);
-            });
+            if (t1Scores.length < 18 || t2Scores.length < 18) { alert('Please fill in all 18 holes'); return; }
 
-            document.querySelectorAll('#scramble-scorecard input[data-team="2"]').forEach(input => {
-                const val = input.value ? parseInt(input.value) : null;
-                if (val !== null) team2Scores.push(val);
-            });
+            const t1Total = t1Scores.reduce((a,b)=>a+b,0);
+            const t2Total = t2Scores.reduce((a,b)=>a+b,0);
 
-            if (team1Scores.length < 18 || team2Scores.length < 18) {
-                alert('Please fill in all 18 holes');
-                return;
-            }
+            let t1Wins = 0;
+            for (let i = 0; i < 18; i++) if (t1Scores[i] < t2Scores[i]) t1Wins++;
 
-            const team1Total = team1Scores.reduce((a, b) => a + b, 0);
-            const team2Total = team2Scores.reduce((a, b) => a + b, 0);
+            const t1Name = league.team1.join(' & ');
+            const t2Name = league.team2.join(' & ');
+            const t1Points = t1Wins > 9 ? SCRAMBLE_POINTS.win : SCRAMBLE_POINTS.loss;
+            const t2Points = t1Wins <= 9 ? SCRAMBLE_POINTS.win : SCRAMBLE_POINTS.loss;
 
-            let team1Wins = 0;
-            for (let i = 0; i < 18; i++) {
-                if (team1Scores[i] < team2Scores[i]) team1Wins++;
-            }
-
-            const team1Name = league.team1.join(' & ');
-            const team2Name = league.team2.join(' & ');
-            const team1Points = team1Wins > 9 ? SCRAMBLE_POINTS.win : SCRAMBLE_POINTS.loss;
-            const team2Points = team2Wins > 9 ? SCRAMBLE_POINTS.win : SCRAMBLE_POINTS.loss;
-
-            updateTeamStanding(league, team1Name, team1Points);
-            updateTeamStanding(league, team2Name, team2Points);
+            updateTeamStanding(league, t1Name, t1Points);
+            updateTeamStanding(league, t2Name, t2Points);
 
             league.history.push({
                 date: new Date().toLocaleDateString(),
-                team1: team1Name,
-                team1Score: team1Total,
-                team1Points: team1Points,
-                team2: team2Name,
-                team2Score: team2Total,
-                team2Points: team2Points,
-                winner: team1Total < team2Total ? team1Name : team2Total < team1Total ? team2Name : 'Tie'
+                course: activeCourse.scramble ? activeCourse.scramble.name : null,
+                team1: t1Name, team1Score: t1Total, team1Points: t1Points,
+                team2: t2Name, team2Score: t2Total, team2Points: t2Points,
+                winner: t1Total < t2Total ? t1Name : t2Total < t1Total ? t2Name : 'Tie'
             });
 
             saveData(data);
-            alert(`Round recorded! ${team1Name} (${team1Total}): ${team1Points} pts\n${team2Name} (${team2Total}): ${team2Points} pts`);
+            alert(`Round recorded!\n${t1Name} (${t1Total}): ${t1Points} pts\n${t2Name} (${t2Total}): ${t2Points} pts`);
             showScrambleDashboard();
         }
 
         function updateTeamStanding(league, teamName, points) {
             const existing = league.standings.find(t => t.name === teamName);
-            if (existing) {
-                existing.points += points;
-                existing.rounds += 1;
-            } else {
-                league.standings.push({ name: teamName, points, rounds: 1 });
-            }
+            if (existing) { existing.points += points; existing.rounds += 1; }
+            else league.standings.push({ name: teamName, points, rounds: 1 });
         }
 
         function showCreateScrambleLeague() {
@@ -1031,8 +1128,7 @@
         }
 
         function populatePlayerSelects() {
-            const selects = ['league-t1p1', 'league-t1p2', 'league-t2p1', 'league-t2p2'];
-            selects.forEach(id => {
+            ['league-t1p1','league-t1p2','league-t2p1','league-t2p2'].forEach(id => {
                 document.getElementById(id).innerHTML = allPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
             });
         }
@@ -1044,26 +1140,11 @@
             const t2p1 = document.getElementById('league-t2p1').value;
             const t2p2 = document.getElementById('league-t2p2').value;
 
-            if (!name) {
-                alert('Please enter a league name');
-                return;
-            }
-
-            if (t1p1 === t1p2 || t2p1 === t2p2 || t1p1 === t2p1 && t1p2 === t2p2 || t1p1 === t2p2 && t1p2 === t2p1) {
-                alert('Please select valid team combinations');
-                return;
-            }
+            if (!name) { alert('Please enter a league name'); return; }
+            if (t1p1 === t1p2 || t2p1 === t2p2) { alert('Please select valid team combinations'); return; }
 
             const data = loadData();
-            data.scrambleLeagues.push({
-                id: Date.now(),
-                name,
-                team1: [t1p1, t1p2],
-                team2: [t2p1, t2p2],
-                standings: [],
-                history: []
-            });
-
+            data.scrambleLeagues.push({ id: Date.now(), name, team1: [t1p1,t1p2], team2: [t2p1,t2p2], standings: [], history: [] });
             saveData(data);
             closeCreateLeagueModal();
             renderScrambleLeagues();
@@ -1074,22 +1155,35 @@
             document.getElementById('league-name-input').value = '';
         }
 
-        // STROKE PLAY FUNCTIONS
+        // ─── Stroke Play screens ──────────────────────────────────────────────
         function showStrokePlayLeagueSelect() {
-            document.getElementById('strokeplay-league-select').classList.add('active');
-            document.getElementById('strokeplay-dashboard').classList.remove('active');
-            document.getElementById('strokeplay-scorecard').classList.remove('active');
+            setScreen('strokeplay', 'strokeplay-league-select');
             renderStrokePlayLeagues();
+        }
+
+        function showStrokePlayDashboard() {
+            setScreen('strokeplay', 'strokeplay-dashboard');
+            updateStrokePlayDashboard();
+        }
+
+        function showStrokePlayCourseSelect() {
+            setScreen('strokeplay', 'strokeplay-course-select');
+            document.getElementById('strokeplay-course-search').value = '';
+            renderCourseList('strokeplay');
+        }
+
+        function showStrokePlayScorecard() {
+            setScreen('strokeplay', 'strokeplay-scorecard');
+            initStrokePlayScorecard();
         }
 
         function renderStrokePlayLeagues() {
             const data = loadData();
-            const container = document.getElementById('strokeplay-leagues');
-            container.innerHTML = data.strokePlayLeagues.map(league => `
+            document.getElementById('strokeplay-leagues').innerHTML = data.strokePlayLeagues.map(league => `
                 <div class="league-card" onclick="selectStrokePlayLeague(${league.id})">
                     <h3>${league.name}</h3>
                     <p><strong>Players:</strong> ${league.players.join(', ')}</p>
-                    <p style="margin-top: 10px; font-size: 0.9em; color: #059669;"><strong>${league.standings.length}</strong> round(s) played</p>
+                    <p style="margin-top:10px;font-size:0.9em;color:#059669;"><strong>${league.standings.length}</strong> round(s) played</p>
                 </div>
             `).join('');
         }
@@ -1099,63 +1193,52 @@
             showStrokePlayDashboard();
         }
 
-        function showStrokePlayDashboard() {
-            document.getElementById('strokeplay-league-select').classList.remove('active');
-            document.getElementById('strokeplay-dashboard').classList.add('active');
-            document.getElementById('strokeplay-scorecard').classList.remove('active');
-            updateStrokePlayDashboard();
-        }
-
-        function showStrokePlayScorecard() {
-            document.getElementById('strokeplay-league-select').classList.remove('active');
-            document.getElementById('strokeplay-dashboard').classList.remove('active');
-            document.getElementById('strokeplay-scorecard').classList.add('active');
-            initStrokePlayScorecard();
-        }
-
         function updateStrokePlayDashboard() {
             const data = loadData();
             const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
-
             if (!league) return;
 
             document.getElementById('strokeplay-dashboard-title').textContent = league.name;
 
-            const standings = [...league.standings].sort((a, b) => b.points - a.points || b.rounds - a.rounds);
-            const standingsHTML = standings.length === 0
-                ? '<tr><td colspan="4" style="text-align: center; color: #9ca3af;">No rounds recorded yet</td></tr>'
+            const standings = [...league.standings].sort((a,b) => b.points - a.points || b.rounds - a.rounds);
+            document.getElementById('stroke-standings-body').innerHTML = standings.length === 0
+                ? '<tr><td colspan="4" style="text-align:center;color:#9ca3af;">No rounds recorded yet</td></tr>'
                 : standings.map((player, idx) => `
-                    <tr class="rank-${idx + 1}">
-                        <td>${idx + 1}</td>
+                    <tr class="rank-${idx+1}">
+                        <td>${idx+1}</td>
                         <td>${player.name}</td>
-                        <td style="font-weight: 700; color: #1e3a8a;">${player.points}</td>
+                        <td style="font-weight:700;color:#1e3a8a;">${player.points}</td>
                         <td>${player.rounds}</td>
                     </tr>
                 `).join('');
-            document.getElementById('stroke-standings-body').innerHTML = standingsHTML;
 
-            const historyHTML = league.history.length === 0
-                ? '<p style="color: #9ca3af;">No rounds played yet</p>'
-                : league.history.map(round => `
+            document.getElementById('stroke-history-list').innerHTML = league.history.length === 0
+                ? '<p style="color:#9ca3af;">No rounds played yet</p>'
+                : [...league.history].reverse().map(round => `
                     <div class="round-entry">
-                        <div class="round-entry-title">${round.date}</div>
-                        ${round.results.map((r, idx) => `<div class="round-entry-detail">${idx + 1}. ${r.name}: ${r.score} - <strong>${r.points} pts</strong></div>`).join('')}
+                        <div class="round-entry-title">${round.date}${round.course ? ' — ' + round.course : ''}</div>
+                        ${round.results.map((r,idx) => `<div class="round-entry-detail">${idx+1}. ${r.name}: ${r.score} — <strong>${r.points} pts</strong></div>`).join('')}
                     </div>
-                `).reverse().join('');
-            document.getElementById('stroke-history-list').innerHTML = historyHTML;
+                `).join('');
         }
 
         function initStrokePlayScorecard() {
             const data = loadData();
             const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
-
             if (!league) return;
+
+            const course = activeCourse.strokeplay;
+            const par = course ? course.par : DEFAULT_PAR;
+
+            const badge = document.getElementById('strokeplay-course-badge');
+            badge.innerHTML = course
+                ? `<span class="current-course-badge">⛳ ${course.name}</span>`
+                : '';
 
             document.getElementById('stroke-p1').value = league.players[0];
             document.getElementById('stroke-p2').value = league.players[1];
             document.getElementById('stroke-p3').value = league.players[2];
             document.getElementById('stroke-p4').value = league.players[3];
-
             updateStrokePlayHeaders();
 
             const tbody = document.getElementById('stroke-scorecard-body');
@@ -1167,7 +1250,7 @@
                     frontRow.className = 'total-row';
                     frontRow.innerHTML = `
                         <td>Front 9</td>
-                        <td>${par.slice(0, 9).reduce((a, b) => a + b, 0)}</td>
+                        <td>${par.slice(0,9).reduce((a,b)=>a+b,0)}</td>
                         <td><strong id="stroke-front-p1">0</strong></td>
                         <td><strong id="stroke-front-p2">0</strong></td>
                         <td><strong id="stroke-front-p3">0</strong></td>
@@ -1175,10 +1258,9 @@
                     `;
                     tbody.appendChild(frontRow);
                 }
-
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${i + 1}</td>
+                    <td>${i+1}</td>
                     <td>${par[i]}</td>
                     <td><input type="number" class="hole-input" data-hole="${i}" data-player="1" onchange="updateStrokePlayScorecard()"></td>
                     <td><input type="number" class="hole-input" data-hole="${i}" data-player="2" onchange="updateStrokePlayScorecard()"></td>
@@ -1192,7 +1274,7 @@
             backRow.className = 'total-row';
             backRow.innerHTML = `
                 <td>Back 9</td>
-                <td>${par.slice(9, 18).reduce((a, b) => a + b, 0)}</td>
+                <td>${par.slice(9,18).reduce((a,b)=>a+b,0)}</td>
                 <td><strong id="stroke-back-p1">0</strong></td>
                 <td><strong id="stroke-back-p2">0</strong></td>
                 <td><strong id="stroke-back-p3">0</strong></td>
@@ -1204,7 +1286,7 @@
             totalRow.className = 'total-row';
             totalRow.innerHTML = `
                 <td>TOTAL</td>
-                <td>${par.reduce((a, b) => a + b, 0)}</td>
+                <td>${par.reduce((a,b)=>a+b,0)}</td>
                 <td><strong id="stroke-total-p1">0</strong></td>
                 <td><strong id="stroke-total-p2">0</strong></td>
                 <td><strong id="stroke-total-p3">0</strong></td>
@@ -1222,89 +1304,64 @@
 
         function updateStrokePlayScorecard() {
             updateStrokePlayHeaders();
-
             for (let p = 1; p <= 4; p++) {
                 const scores = [];
-                document.querySelectorAll(`#strokeplay-scorecard input[data-player="${p}"]`).forEach(input => {
-                    const val = input.value ? parseInt(input.value) : null;
-                    if (val !== null) scores.push(val);
-                });
-
-                const total = scores.reduce((a, b) => a + b, 0);
-                const front = scores.slice(0, 9).reduce((a, b) => a + b, 0);
-                const back = scores.slice(9, 18).reduce((a, b) => a + b, 0);
-
-                document.getElementById(`stroke-total-p${p}`).textContent = total || 0;
-                document.getElementById(`stroke-front-p${p}`).textContent = front || 0;
-                document.getElementById(`stroke-back-p${p}`).textContent = back || 0;
+                document.querySelectorAll(`#strokeplay-scorecard input[data-player="${p}"]`).forEach(i => { if (i.value) scores.push(parseInt(i.value)); });
+                document.getElementById(`stroke-total-p${p}`).textContent = scores.reduce((a,b)=>a+b,0)||0;
+                document.getElementById(`stroke-front-p${p}`).textContent = scores.slice(0,9).reduce((a,b)=>a+b,0)||0;
+                document.getElementById(`stroke-back-p${p}`).textContent  = scores.slice(9,18).reduce((a,b)=>a+b,0)||0;
             }
         }
 
         function resetStrokePlayScorecard() {
-            document.querySelectorAll('#strokeplay-scorecard input[type="number"]').forEach(input => input.value = '');
+            document.querySelectorAll('#strokeplay-scorecard input[type="number"]').forEach(i => i.value = '');
             updateStrokePlayScorecard();
         }
 
         function recordStrokePlayRound() {
             const data = loadData();
             const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
-
             if (!league) return;
 
             const playerScores = [];
-
             for (let p = 1; p <= 4; p++) {
                 const name = document.getElementById(`stroke-p${p}`).value || `Player ${p}`;
                 const scores = [];
-                document.querySelectorAll(`#strokeplay-scorecard input[data-player="${p}"]`).forEach(input => {
-                    const val = input.value ? parseInt(input.value) : null;
-                    if (val !== null) scores.push(val);
-                });
-
-                if (scores.length < 18) {
-                    alert('Please fill in all 18 holes for all players');
-                    return;
-                }
-
-                const total = scores.reduce((a, b) => a + b, 0);
-                playerScores.push({ name, score: total, player: p });
+                document.querySelectorAll(`#strokeplay-scorecard input[data-player="${p}"]`).forEach(i => { if (i.value) scores.push(parseInt(i.value)); });
+                if (scores.length < 18) { alert('Please fill in all 18 holes for all players'); return; }
+                playerScores.push({ name, score: scores.reduce((a,b)=>a+b,0) });
             }
 
-            playerScores.sort((a, b) => a.score - b.score);
+            playerScores.sort((a,b) => a.score - b.score);
 
             const roundDetails = [];
             playerScores.forEach((player, idx) => {
-                const points = STROKE_PLAY_POINTS[idx + 1] || 0;
+                const points = STROKE_PLAY_POINTS[idx+1] || 0;
                 updatePlayerStanding(league, player.name, points);
-                roundDetails.push({ name: player.name, score: player.score, rank: idx + 1, points });
+                roundDetails.push({ name: player.name, score: player.score, rank: idx+1, points });
             });
 
             league.history.push({
                 date: new Date().toLocaleDateString(),
+                course: activeCourse.strokeplay ? activeCourse.strokeplay.name : null,
                 results: roundDetails
             });
 
             saveData(data);
 
-            let message = 'Round recorded!\n\n';
-            roundDetails.forEach(r => {
-                message += `${r.rank}. ${r.name}: ${r.score} - ${r.points} pts\n`;
-            });
-            alert(message);
+            let msg = 'Round recorded!\n\n';
+            roundDetails.forEach(r => msg += `${r.rank}. ${r.name}: ${r.score} — ${r.points} pts\n`);
+            alert(msg);
             showStrokePlayDashboard();
         }
 
         function updatePlayerStanding(league, playerName, points) {
             const existing = league.standings.find(p => p.name === playerName);
-            if (existing) {
-                existing.points += points;
-                existing.rounds += 1;
-            } else {
-                league.standings.push({ name: playerName, points, rounds: 1 });
-            }
+            if (existing) { existing.points += points; existing.rounds += 1; }
+            else league.standings.push({ name: playerName, points, rounds: 1 });
         }
 
-        // Initialize on load
+        // ─── Init ─────────────────────────────────────────────────────────────
         window.addEventListener('load', () => {
             loadData();
             renderScrambleLeagues();
