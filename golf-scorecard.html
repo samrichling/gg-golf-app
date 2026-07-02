@@ -694,6 +694,29 @@
         </div>
     </div>
 
+    <!-- Confirm/Edit Par Modal -->
+    <div id="confirm-par-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="confirm-par-title">Confirm Hole Pars</h2>
+            <p style="color:#6b7280;margin-bottom:16px;font-size:0.95em;">Check that the pars look right and correct any that are wrong before starting.</p>
+
+            <div class="par-section-label">Front 9</div>
+            <div class="par-inputs-grid" id="confirm-front9"></div>
+
+            <div class="par-section-label">Back 9</div>
+            <div class="par-inputs-grid" id="confirm-back9"></div>
+
+            <div style="margin-top:16px;padding:12px;background:#f3f4f6;border-radius:6px;text-align:center;">
+                Total Par: <strong id="confirm-total-par">72</strong>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary" onclick="closeConfirmParModal()">Cancel</button>
+                <button class="btn-primary" onclick="confirmPars()">Start Round</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add Course Modal -->
     <div id="add-course-modal" class="modal">
         <div class="modal-content">
@@ -911,8 +934,7 @@
                     par
                 };
 
-                if (tab === 'scramble') showScrambleScorecard();
-                else showStrokePlayScorecard();
+                openConfirmParModal(tab);
 
             } catch (e) {
                 container.innerHTML = `<div class="no-courses-msg">Error: ${e.message || e}</div>`;
@@ -1416,6 +1438,56 @@
             const existing = league.standings.find(p => p.name === playerName);
             if (existing) { existing.points += points; existing.rounds += 1; }
             else league.standings.push({ name: playerName, points, rounds: 1 });
+        }
+
+        // ─── Confirm Par Modal ────────────────────────────────────────────────
+        let confirmParTab = null;
+
+        function openConfirmParModal(tab) {
+            confirmParTab = tab;
+            const course = activeCourse[tab];
+            document.getElementById('confirm-par-title').textContent = `Confirm Pars — ${course.name}`;
+
+            const front = document.getElementById('confirm-front9');
+            const back = document.getElementById('confirm-back9');
+            front.innerHTML = '';
+            back.innerHTML = '';
+
+            for (let i = 0; i < 9; i++) {
+                front.innerHTML += `<div><label>${i+1}</label><input type="number" id="cpar-${i}" min="3" max="6" value="${course.par[i]}" oninput="updateConfirmTotal()"></div>`;
+            }
+            for (let i = 9; i < 18; i++) {
+                back.innerHTML += `<div><label>${i+1}</label><input type="number" id="cpar-${i}" min="3" max="6" value="${course.par[i]}" oninput="updateConfirmTotal()"></div>`;
+            }
+
+            updateConfirmTotal();
+            document.getElementById('confirm-par-modal').classList.add('active');
+        }
+
+        function updateConfirmTotal() {
+            let total = 0;
+            for (let i = 0; i < 18; i++) {
+                const el = document.getElementById(`cpar-${i}`);
+                total += el ? (parseInt(el.value) || 0) : 0;
+            }
+            document.getElementById('confirm-total-par').textContent = total;
+        }
+
+        function closeConfirmParModal() {
+            document.getElementById('confirm-par-modal').classList.remove('active');
+        }
+
+        function confirmPars() {
+            const par = [];
+            for (let i = 0; i < 18; i++) {
+                const val = parseInt(document.getElementById(`cpar-${i}`).value);
+                if (!val || val < 3 || val > 6) { alert(`Invalid par for hole ${i+1}`); return; }
+                par.push(val);
+            }
+            activeCourse[confirmParTab].par = par;
+            closeConfirmParModal();
+            if (confirmParTab === 'scramble') showScrambleScorecard();
+            else showStrokePlayScorecard();
         }
 
         // ─── Init ─────────────────────────────────────────────────────────────
