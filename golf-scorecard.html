@@ -635,6 +635,7 @@
                 <div id="strokeplay-league-select" class="screen active">
                     <h2 style="color:#1e3a8a;margin-bottom:20px;">Select a League</h2>
                     <div class="league-grid" id="strokeplay-leagues"></div>
+                    <button class="add-league-btn" onclick="openCreateStrokePlayModal()">+ Create New League</button>
                 </div>
 
                 <div id="strokeplay-dashboard" class="screen">
@@ -659,6 +660,7 @@
                             <div class="round-history" id="stroke-history-list"></div>
                         </div>
                         <button class="play-round-btn" onclick="showStrokePlayCourseSelect()">▶ Play New Round</button>
+                        <button class="btn-settings" onclick="showStrokePlayLeagueSettings()">⚙ League Settings</button>
                     </div>
                 </div>
 
@@ -677,35 +679,12 @@
                     <button class="back-button" onclick="showStrokePlayCourseSelect()">← Change Course</button>
                     <div id="strokeplay-course-badge"></div>
 
-                    <div class="player-inputs">
-                        <div class="input-group">
-                            <label>Player 1 Name</label>
-                            <input type="text" id="stroke-p1" placeholder="e.g., Mason" value="Mason">
-                        </div>
-                        <div class="input-group">
-                            <label>Player 2 Name</label>
-                            <input type="text" id="stroke-p2" placeholder="e.g., Sam" value="Sam">
-                        </div>
-                        <div class="input-group">
-                            <label>Player 3 Name</label>
-                            <input type="text" id="stroke-p3" placeholder="e.g., Sean" value="Sean">
-                        </div>
-                        <div class="input-group">
-                            <label>Player 4 Name</label>
-                            <input type="text" id="stroke-p4" placeholder="e.g., Jonah" value="Jonah">
-                        </div>
-                    </div>
-
                     <div class="scorecard">
                         <table>
                             <thead>
-                                <tr>
+                                <tr id="stroke-play-header-row">
                                     <th>Hole</th>
                                     <th>Par</th>
-                                    <th id="stroke-p1-header">Mason</th>
-                                    <th id="stroke-p2-header">Sam</th>
-                                    <th id="stroke-p3-header">Sean</th>
-                                    <th id="stroke-p4-header">Jonah</th>
                                 </tr>
                             </thead>
                             <tbody id="stroke-scorecard-body"></tbody>
@@ -713,6 +692,7 @@
                     </div>
 
                     <div class="button-group">
+                        <button class="btn-secondary" onclick="saveAndExitStrokePlay()">Save & Exit</button>
                         <button class="btn-secondary" onclick="resetStrokePlayScorecard()">Reset</button>
                         <button class="btn-primary" onclick="recordStrokePlayRound()">Record Round</button>
                     </div>
@@ -764,6 +744,46 @@
             <div class="button-group">
                 <button class="btn-secondary" onclick="closeLeagueSettings()">Cancel</button>
                 <button class="btn-primary" onclick="saveLeagueSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Stroke Play League Modal -->
+    <div id="create-strokeplay-modal" class="modal">
+        <div class="modal-content">
+            <h2>Create New League</h2>
+            <div class="input-group">
+                <label>League Name</label>
+                <input type="text" id="sp-league-name-input" placeholder="e.g., Mini Majors">
+            </div>
+            <div class="input-group">
+                <label>Players</label>
+                <div id="sp-player-inputs"></div>
+                <button class="btn-secondary" style="margin-top:8px;width:100%;" onclick="addStrokePlayPlayerInput()">+ Add Player</button>
+            </div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="closeCreateStrokePlayModal()">Cancel</button>
+                <button class="btn-primary" onclick="createStrokePlayLeague()">Create League</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stroke Play League Settings Modal -->
+    <div id="strokeplay-settings-modal" class="modal">
+        <div class="modal-content">
+            <h2>League Settings</h2>
+            <div class="input-group">
+                <label>League Name</label>
+                <input type="text" id="sp-settings-league-name">
+            </div>
+            <div class="input-group">
+                <label>Players</label>
+                <div id="sp-settings-player-inputs"></div>
+                <button class="btn-secondary" style="margin-top:8px;width:100%;" onclick="addStrokePlaySettingsPlayerInput()">+ Add Player</button>
+            </div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="closeStrokePlayLeagueSettings()">Cancel</button>
+                <button class="btn-primary" onclick="saveStrokePlayLeagueSettings()">Save</button>
             </div>
         </div>
     </div>
@@ -1412,6 +1432,16 @@
         }
 
         function showStrokePlayCourseSelect() {
+            const draft = getDraft('sp-' + currentStrokePlayLeagueId);
+            if (draft) {
+                const resume = confirm(`You have a saved round from ${draft.savedAt} at ${draft.course ? draft.course.name : 'unknown course'}.\n\nResume it?`);
+                if (resume) {
+                    activeCourse.strokeplay = draft.course;
+                    showStrokePlayScorecard();
+                    return;
+                }
+                clearDraft('sp-' + currentStrokePlayLeagueId);
+            }
             setScreen('strokeplay', 'strokeplay-course-select');
             document.getElementById('strokeplay-course-search').value = '';
             renderCourseList('strokeplay');
@@ -1472,94 +1502,85 @@
             const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
             if (!league) return;
 
+            const players = league.players;
             const course = activeCourse.strokeplay;
             const par = course ? course.par : DEFAULT_PAR;
 
             const badge = document.getElementById('strokeplay-course-badge');
-            badge.innerHTML = course
-                ? `<span class="current-course-badge">⛳ ${course.name}</span>`
-                : '';
+            badge.innerHTML = course ? `<span class="current-course-badge">⛳ ${course.name}</span>` : '';
 
-            document.getElementById('stroke-p1').value = league.players[0];
-            document.getElementById('stroke-p2').value = league.players[1];
-            document.getElementById('stroke-p3').value = league.players[2];
-            document.getElementById('stroke-p4').value = league.players[3];
-            updateStrokePlayHeaders();
+            // Build header row dynamically
+            const headerRow = document.getElementById('stroke-play-header-row');
+            headerRow.innerHTML = '<th>Hole</th><th>Par</th>' +
+                players.map(name => `<th>${name}</th>`).join('');
 
             const tbody = document.getElementById('stroke-scorecard-body');
             tbody.innerHTML = '';
+
+            const scoreCols = (prefix) => players.map((name, pi) =>
+                `<td><strong id="${prefix}-p${pi}">0</strong></td>`).join('');
 
             for (let i = 0; i < 18; i++) {
                 if (i === 9) {
                     const frontRow = document.createElement('tr');
                     frontRow.className = 'total-row';
-                    frontRow.innerHTML = `
-                        <td>Front 9</td>
-                        <td>${par.slice(0,9).reduce((a,b)=>a+b,0)}</td>
-                        <td><strong id="stroke-front-p1">0</strong></td>
-                        <td><strong id="stroke-front-p2">0</strong></td>
-                        <td><strong id="stroke-front-p3">0</strong></td>
-                        <td><strong id="stroke-front-p4">0</strong></td>
-                    `;
+                    frontRow.innerHTML = `<td>Front 9</td><td>${par.slice(0,9).reduce((a,b)=>a+b,0)}</td>${scoreCols('stroke-front')}`;
                     tbody.appendChild(frontRow);
                 }
                 const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${i+1}</td>
-                    <td>${par[i]}</td>
-                    <td><input type="number" class="hole-input" data-hole="${i}" data-player="1" onchange="updateStrokePlayScorecard()"></td>
-                    <td><input type="number" class="hole-input" data-hole="${i}" data-player="2" onchange="updateStrokePlayScorecard()"></td>
-                    <td><input type="number" class="hole-input" data-hole="${i}" data-player="3" onchange="updateStrokePlayScorecard()"></td>
-                    <td><input type="number" class="hole-input" data-hole="${i}" data-player="4" onchange="updateStrokePlayScorecard()"></td>
-                `;
+                row.innerHTML = `<td>${i+1}</td><td>${par[i]}</td>` +
+                    players.map((name, pi) =>
+                        `<td class="score-cell" data-hole="${i}" data-player="${pi}" data-player-name="${name}" onclick="openKeypad(this)">—</td>`
+                    ).join('');
                 tbody.appendChild(row);
             }
 
             const backRow = document.createElement('tr');
             backRow.className = 'total-row';
-            backRow.innerHTML = `
-                <td>Back 9</td>
-                <td>${par.slice(9,18).reduce((a,b)=>a+b,0)}</td>
-                <td><strong id="stroke-back-p1">0</strong></td>
-                <td><strong id="stroke-back-p2">0</strong></td>
-                <td><strong id="stroke-back-p3">0</strong></td>
-                <td><strong id="stroke-back-p4">0</strong></td>
-            `;
+            backRow.innerHTML = `<td>Back 9</td><td>${par.slice(9,18).reduce((a,b)=>a+b,0)}</td>${scoreCols('stroke-back')}`;
             tbody.appendChild(backRow);
 
             const totalRow = document.createElement('tr');
             totalRow.className = 'total-row';
-            totalRow.innerHTML = `
-                <td>TOTAL</td>
-                <td>${par.reduce((a,b)=>a+b,0)}</td>
-                <td><strong id="stroke-total-p1">0</strong></td>
-                <td><strong id="stroke-total-p2">0</strong></td>
-                <td><strong id="stroke-total-p3">0</strong></td>
-                <td><strong id="stroke-total-p4">0</strong></td>
-            `;
+            totalRow.innerHTML = `<td>TOTAL</td><td>${par.reduce((a,b)=>a+b,0)}</td>${scoreCols('stroke-total')}`;
             tbody.appendChild(totalRow);
-        }
 
-        function updateStrokePlayHeaders() {
-            for (let p = 1; p <= 4; p++) {
-                const name = document.getElementById(`stroke-p${p}`).value || `Player ${p}`;
-                document.getElementById(`stroke-p${p}-header`).textContent = name;
+            // Restore draft if exists
+            const draft = getDraft('sp-' + currentStrokePlayLeagueId);
+            if (draft && draft.scores) {
+                Object.entries(draft.scores).forEach(([key, val]) => {
+                    const [hole, pi] = key.split('-');
+                    const cell = document.querySelector(`#stroke-scorecard-body .score-cell[data-hole="${hole}"][data-player="${pi}"]`);
+                    if (cell) { cell.dataset.value = val; cell.textContent = val; }
+                });
+                updateStrokePlayScorecard();
             }
         }
 
         function updateStrokePlayScorecard() {
-            updateStrokePlayHeaders();
-            for (let p = 1; p <= 4; p++) {
+            const data = loadData();
+            const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
+            if (!league) return;
+            league.players.forEach((name, pi) => {
+                const cells = document.querySelectorAll(`#stroke-scorecard-body .score-cell[data-player="${pi}"]`);
                 const scores = [];
-                document.querySelectorAll(`#strokeplay-scorecard input[data-player="${p}"]`).forEach(i => { if (i.value) scores.push(parseInt(i.value)); });
-                document.getElementById(`stroke-total-p${p}`).textContent = scores.reduce((a,b)=>a+b,0)||0;
-                document.getElementById(`stroke-front-p${p}`).textContent = scores.slice(0,9).reduce((a,b)=>a+b,0)||0;
-                document.getElementById(`stroke-back-p${p}`).textContent  = scores.slice(9,18).reduce((a,b)=>a+b,0)||0;
-            }
+                cells.forEach(c => { if (c.dataset.value) scores.push(parseInt(c.dataset.value)); });
+                const front = scores.slice(0,9).reduce((a,b)=>a+b,0);
+                const back = scores.slice(9,18).reduce((a,b)=>a+b,0);
+                const frontEl = document.getElementById(`stroke-front-p${pi}`);
+                const backEl = document.getElementById(`stroke-back-p${pi}`);
+                const totalEl = document.getElementById(`stroke-total-p${pi}`);
+                if (frontEl) frontEl.textContent = front || 0;
+                if (backEl) backEl.textContent = back || 0;
+                if (totalEl) totalEl.textContent = (front + back) || 0;
+            });
         }
 
         function resetStrokePlayScorecard() {
-            document.querySelectorAll('#strokeplay-scorecard input[type="number"]').forEach(i => i.value = '');
+            document.querySelectorAll('#stroke-scorecard-body .score-cell').forEach(c => {
+                delete c.dataset.value;
+                c.textContent = '—';
+            });
             updateStrokePlayScorecard();
         }
 
@@ -1569,13 +1590,15 @@
             if (!league) return;
 
             const playerScores = [];
-            for (let p = 1; p <= 4; p++) {
-                const name = document.getElementById(`stroke-p${p}`).value || `Player ${p}`;
+            let incomplete = false;
+            league.players.forEach((name, pi) => {
+                const cells = document.querySelectorAll(`#stroke-scorecard-body .score-cell[data-player="${pi}"]`);
                 const scores = [];
-                document.querySelectorAll(`#strokeplay-scorecard input[data-player="${p}"]`).forEach(i => { if (i.value) scores.push(parseInt(i.value)); });
-                if (scores.length < 18) { alert('Please fill in all 18 holes for all players'); return; }
+                cells.forEach(c => { if (c.dataset.value) scores.push(parseInt(c.dataset.value)); });
+                if (scores.length < 18) incomplete = true;
                 playerScores.push({ name, score: scores.reduce((a,b)=>a+b,0) });
-            }
+            });
+            if (incomplete) { alert('Please fill in all 18 holes for all players'); return; }
 
             playerScores.sort((a,b) => a.score - b.score);
 
@@ -1594,6 +1617,7 @@
 
             saveData(data);
 
+            clearDraft('sp-' + currentStrokePlayLeagueId);
             let msg = 'Round recorded!\n\n';
             roundDetails.forEach(r => msg += `${r.rank}. ${r.name}: ${r.score} — ${r.points} pts\n`);
             alert(msg);
@@ -1651,6 +1675,115 @@
             }, 50);
         }
 
+        function saveAndExitStrokePlay() {
+            const scores = {};
+            document.querySelectorAll('#stroke-scorecard-body .score-cell').forEach(c => {
+                if (c.dataset.value) scores[`${c.dataset.hole}-${c.dataset.player}`] = c.dataset.value;
+            });
+            const drafts = getDrafts();
+            drafts['sp-' + currentStrokePlayLeagueId] = {
+                course: activeCourse.strokeplay,
+                scores,
+                savedAt: new Date().toLocaleDateString()
+            };
+            saveDrafts(drafts);
+            showStrokePlayDashboard();
+        }
+
+        // ─── Stroke Play League create/settings ──────────────────────────────
+        function openCreateStrokePlayModal() {
+            document.getElementById('sp-league-name-input').value = '';
+            const container = document.getElementById('sp-player-inputs');
+            container.innerHTML = '';
+            ['Player 1','Player 2','Player 3','Player 4'].forEach(ph => addStrokePlayPlayerInput(ph));
+            document.getElementById('create-strokeplay-modal').classList.add('active');
+        }
+
+        function closeCreateStrokePlayModal() {
+            document.getElementById('create-strokeplay-modal').classList.remove('active');
+        }
+
+        function addStrokePlayPlayerInput(placeholder) {
+            const container = document.getElementById('sp-player-inputs');
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = placeholder || 'Player name';
+            input.style.flex = '1';
+            const btn = document.createElement('button');
+            btn.textContent = '✕';
+            btn.className = 'btn-secondary';
+            btn.style.cssText = 'padding:8px 12px;flex-shrink:0;';
+            btn.onclick = () => container.removeChild(wrap);
+            wrap.appendChild(input);
+            wrap.appendChild(btn);
+            container.appendChild(wrap);
+        }
+
+        function createStrokePlayLeague() {
+            const name = document.getElementById('sp-league-name-input').value.trim();
+            if (!name) { alert('Please enter a league name'); return; }
+            const players = Array.from(document.querySelectorAll('#sp-player-inputs input'))
+                .map(i => i.value.trim()).filter(Boolean);
+            if (players.length < 2) { alert('Please add at least 2 players'); return; }
+            const data = loadData();
+            data.strokePlayLeagues.push({ id: Date.now(), name, players, standings: [], history: [] });
+            saveData(data);
+            closeCreateStrokePlayModal();
+            renderStrokePlayLeagues();
+        }
+
+        function showStrokePlayLeagueSettings() {
+            const data = loadData();
+            const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
+            if (!league) return;
+            document.getElementById('sp-settings-league-name').value = league.name;
+            const container = document.getElementById('sp-settings-player-inputs');
+            container.innerHTML = '';
+            league.players.forEach(name => addStrokePlaySettingsPlayerInput(name));
+            document.getElementById('strokeplay-settings-modal').classList.add('active');
+        }
+
+        function closeStrokePlayLeagueSettings() {
+            document.getElementById('strokeplay-settings-modal').classList.remove('active');
+        }
+
+        function addStrokePlaySettingsPlayerInput(value) {
+            const container = document.getElementById('sp-settings-player-inputs');
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = value || '';
+            input.placeholder = 'Player name';
+            input.style.flex = '1';
+            const btn = document.createElement('button');
+            btn.textContent = '✕';
+            btn.className = 'btn-secondary';
+            btn.style.cssText = 'padding:8px 12px;flex-shrink:0;';
+            btn.onclick = () => container.removeChild(wrap);
+            wrap.appendChild(input);
+            wrap.appendChild(btn);
+            container.appendChild(wrap);
+        }
+
+        function saveStrokePlayLeagueSettings() {
+            const name = document.getElementById('sp-settings-league-name').value.trim();
+            if (!name) { alert('Please enter a league name'); return; }
+            const players = Array.from(document.querySelectorAll('#sp-settings-player-inputs input'))
+                .map(i => i.value.trim()).filter(Boolean);
+            if (players.length < 2) { alert('Please add at least 2 players'); return; }
+            const data = loadData();
+            const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
+            if (!league) return;
+            league.name = name;
+            league.players = players;
+            saveData(data);
+            closeStrokePlayLeagueSettings();
+            updateStrokePlayDashboard();
+        }
+
         // ─── League settings ──────────────────────────────────────────────────
         function showLeagueSettings() {
             const data = loadData();
@@ -1684,10 +1817,15 @@
         function openKeypad(cell) {
             activeScoreCell = cell;
             const hole = parseInt(cell.dataset.hole) + 1;
-            const team = cell.dataset.team === '1'
-                ? document.getElementById('scramble-sc-team1-header').textContent
-                : document.getElementById('scramble-sc-team2-header').textContent;
-            document.getElementById('keypad-label').textContent = `Hole ${hole} — ${team}`;
+            let label;
+            if (cell.dataset.team !== undefined) {
+                label = cell.dataset.team === '1'
+                    ? document.getElementById('scramble-sc-team1-header').textContent
+                    : document.getElementById('scramble-sc-team2-header').textContent;
+            } else {
+                label = cell.dataset.playerName || `Player ${parseInt(cell.dataset.player)+1}`;
+            }
+            document.getElementById('keypad-label').textContent = `Hole ${hole} — ${label}`;
             document.getElementById('keypad-overlay').classList.add('active');
         }
 
@@ -1700,16 +1838,20 @@
             if (!activeScoreCell) return;
             activeScoreCell.dataset.value = n;
             activeScoreCell.textContent = n;
+            const isStroke = activeScoreCell.dataset.team === undefined;
             closeKeypad();
-            updateScramblesScorecard();
+            if (isStroke) updateStrokePlayScorecard();
+            else updateScramblesScorecard();
         }
 
         function keypadClear() {
             if (!activeScoreCell) return;
             delete activeScoreCell.dataset.value;
             activeScoreCell.textContent = '—';
+            const isStroke = activeScoreCell.dataset.team === undefined;
             closeKeypad();
-            updateScramblesScorecard();
+            if (isStroke) updateStrokePlayScorecard();
+            else updateScramblesScorecard();
         }
 
         function handleKeypadOverlayClick(e) {
