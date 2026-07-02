@@ -724,21 +724,19 @@
     <!-- Create Scramble League Modal -->
     <div id="create-league-modal" class="modal">
         <div class="modal-content">
-            <h2>Create New Scramble League</h2>
+            <h2>Create New League</h2>
             <div class="input-group">
                 <label>League Name</label>
-                <input type="text" id="league-name-input" placeholder="e.g., Mason & Sam vs Sean & Jonah">
+                <input type="text" id="league-name-input" placeholder="e.g., Tuesday Night Scramble">
             </div>
-            <div class="input-group"><label>Team 1 Players</label></div>
-            <div class="player-select">
-                <select id="league-t1p1"></select>
-                <select id="league-t1p2"></select>
+            <div class="input-group">
+                <label>Team A Name</label>
+                <input type="text" id="league-team1" placeholder="e.g., Team A">
             </div>
-            <div class="vs-text">vs</div>
-            <div class="input-group"><label>Team 2 Players</label></div>
-            <div class="player-select">
-                <select id="league-t2p1"></select>
-                <select id="league-t2p2"></select>
+            <div class="vs-text" style="margin:8px 0;">vs</div>
+            <div class="input-group">
+                <label>Team B Name</label>
+                <input type="text" id="league-team2" placeholder="e.g., Team B">
             </div>
             <div class="button-group">
                 <button class="btn-secondary" onclick="closeCreateLeagueModal()">Cancel</button>
@@ -756,18 +754,12 @@
                 <input type="text" id="settings-league-name">
             </div>
             <div class="input-group">
-                <label>Team 1</label>
-                <div style="display:flex;gap:8px;">
-                    <input type="text" id="settings-t1p1" style="flex:1;">
-                    <input type="text" id="settings-t1p2" style="flex:1;">
-                </div>
+                <label>Team A Name</label>
+                <input type="text" id="settings-team1">
             </div>
             <div class="input-group">
-                <label>Team 2</label>
-                <div style="display:flex;gap:8px;">
-                    <input type="text" id="settings-t2p1" style="flex:1;">
-                    <input type="text" id="settings-t2p2" style="flex:1;">
-                </div>
+                <label>Team B Name</label>
+                <input type="text" id="settings-team2">
             </div>
             <div class="button-group">
                 <button class="btn-secondary" onclick="closeLeagueSettings()">Cancel</button>
@@ -891,9 +883,17 @@
 
         function initDefaultData() {
             const saved = localStorage.getItem('golfData');
-            if (saved) return JSON.parse(saved);
+            if (saved) {
+                // Migrate old array-style team1/team2 to strings
+                const d = JSON.parse(saved);
+                d.scrambleLeagues.forEach(l => {
+                    if (Array.isArray(l.team1)) l.team1 = l.team1.join(' & ');
+                    if (Array.isArray(l.team2)) l.team2 = l.team2.join(' & ');
+                });
+                return d;
+            }
             const d = {
-                scrambleLeagues: [{ id: Date.now(), name: 'Mason & Sam vs Sean & Jonah', team1: ['Mason','Sam'], team2: ['Sean','Jonah'], standings: [], history: [] }],
+                scrambleLeagues: [{ id: Date.now(), name: 'League 1', team1: 'Team A', team2: 'Team B', standings: [], history: [] }],
                 strokePlayLeagues: [{ id: Date.now()+1, name: 'Mini Majors', players: ['Mason','Sam','Sean','Jonah'], standings: [], history: [] }]
             };
             localStorage.setItem('golfData', JSON.stringify(d));
@@ -906,7 +906,6 @@
         const API_DETAIL = 'https://api.opengolfapi.org/api/v1/courses';
         let searchTimeout = null;
 
-        const allPlayers = ['Mason', 'Sam', 'Sean', 'Jonah'];
         const SCRAMBLE_POINTS = { win: 10, loss: 5 };
         const STROKE_PLAY_POINTS = { 1: 10, 2: 8, 3: 6, 4: 4 };
 
@@ -1165,9 +1164,8 @@
             container.innerHTML = data.scrambleLeagues.map(league => `
                 <div class="league-card" onclick="selectScrambleLeague(${league.id})">
                     <h3>${league.name}</h3>
-                    <p><strong>Team 1:</strong> ${league.team1.join(' & ')}</p>
-                    <p><strong>Team 2:</strong> ${league.team2.join(' & ')}</p>
-                    <p style="margin-top:10px;font-size:0.9em;color:#059669;"><strong>${league.standings.length}</strong> round(s) played</p>
+                    <p><strong>${league.team1}</strong> vs <strong>${league.team2}</strong></p>
+                    <p style="margin-top:10px;font-size:0.9em;color:#059669;"><strong>${league.history.length}</strong> round(s) played</p>
                 </div>
             `).join('');
         }
@@ -1227,8 +1225,8 @@
                 ? `<span class="current-course-badge">⛳ ${course.name}</span>`
                 : '';
 
-            document.getElementById('scramble-sc-team1-header').textContent = league.team1.join(' & ');
-            document.getElementById('scramble-sc-team2-header').textContent = league.team2.join(' & ');
+            document.getElementById('scramble-sc-team1-header').textContent = league.team1;
+            document.getElementById('scramble-sc-team2-header').textContent = league.team2;
 
             const tbody = document.getElementById('scramble-scorecard-body');
             tbody.innerHTML = '';
@@ -1347,8 +1345,8 @@
             let t1Wins = 0;
             for (let i = 0; i < 18; i++) if (t1Scores[i] < t2Scores[i]) t1Wins++;
 
-            const t1Name = league.team1.join(' & ');
-            const t2Name = league.team2.join(' & ');
+            const t1Name = league.team1;
+            const t2Name = league.team2;
             const t1Points = t1Wins > 9 ? SCRAMBLE_POINTS.win : SCRAMBLE_POINTS.loss;
             const t2Points = t1Wins <= 9 ? SCRAMBLE_POINTS.win : SCRAMBLE_POINTS.loss;
 
@@ -1376,28 +1374,23 @@
         }
 
         function showCreateScrambleLeague() {
+            document.getElementById('league-name-input').value = '';
+            document.getElementById('league-team1').value = '';
+            document.getElementById('league-team2').value = '';
             document.getElementById('create-league-modal').classList.add('active');
-            populatePlayerSelects();
-        }
-
-        function populatePlayerSelects() {
-            ['league-t1p1','league-t1p2','league-t2p1','league-t2p2'].forEach(id => {
-                document.getElementById(id).innerHTML = allPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
-            });
         }
 
         function createScrambleLeague() {
             const name = document.getElementById('league-name-input').value.trim();
-            const t1p1 = document.getElementById('league-t1p1').value;
-            const t1p2 = document.getElementById('league-t1p2').value;
-            const t2p1 = document.getElementById('league-t2p1').value;
-            const t2p2 = document.getElementById('league-t2p2').value;
+            const team1 = document.getElementById('league-team1').value.trim();
+            const team2 = document.getElementById('league-team2').value.trim();
 
             if (!name) { alert('Please enter a league name'); return; }
-            if (t1p1 === t1p2 || t2p1 === t2p2) { alert('Please select valid team combinations'); return; }
+            if (!team1) { alert('Please enter a Team A name'); return; }
+            if (!team2) { alert('Please enter a Team B name'); return; }
 
             const data = loadData();
-            data.scrambleLeagues.push({ id: Date.now(), name, team1: [t1p1,t1p2], team2: [t2p1,t2p2], standings: [], history: [] });
+            data.scrambleLeagues.push({ id: Date.now(), name, team1, team2, standings: [], history: [] });
             saveData(data);
             closeCreateLeagueModal();
             renderScrambleLeagues();
@@ -1405,7 +1398,6 @@
 
         function closeCreateLeagueModal() {
             document.getElementById('create-league-modal').classList.remove('active');
-            document.getElementById('league-name-input').value = '';
         }
 
         // ─── Stroke Play screens ──────────────────────────────────────────────
@@ -1665,10 +1657,8 @@
             const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
             if (!league) return;
             document.getElementById('settings-league-name').value = league.name;
-            document.getElementById('settings-t1p1').value = league.team1[0];
-            document.getElementById('settings-t1p2').value = league.team1[1];
-            document.getElementById('settings-t2p1').value = league.team2[0];
-            document.getElementById('settings-t2p2').value = league.team2[1];
+            document.getElementById('settings-team1').value = league.team1;
+            document.getElementById('settings-team2').value = league.team2;
             document.getElementById('league-settings-modal').classList.add('active');
         }
 
@@ -1680,15 +1670,9 @@
             const data = loadData();
             const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
             if (!league) return;
-            league.name = document.getElementById('settings-league-name').value.trim() || league.name;
-            league.team1 = [
-                document.getElementById('settings-t1p1').value.trim() || league.team1[0],
-                document.getElementById('settings-t1p2').value.trim() || league.team1[1]
-            ];
-            league.team2 = [
-                document.getElementById('settings-t2p1').value.trim() || league.team2[0],
-                document.getElementById('settings-t2p2').value.trim() || league.team2[1]
-            ];
+            league.name  = document.getElementById('settings-league-name').value.trim() || league.name;
+            league.team1 = document.getElementById('settings-team1').value.trim() || league.team1;
+            league.team2 = document.getElementById('settings-team2').value.trim() || league.team2;
             saveData(data);
             closeLeagueSettings();
             updateScrambleDashboard();
