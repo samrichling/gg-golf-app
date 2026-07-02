@@ -723,40 +723,8 @@
     <script>
         // ─── Default par (used as fallback) ───────────────────────────────────
         const DEFAULT_PAR = [4,4,3,5,4,3,4,5,4,4,3,4,5,4,3,4,4,5];
-
-        // ─── Built-in courses ─────────────────────────────────────────────────
-        const BUILTIN_COURSES = [
-            {
-                id: 'pebble-beach',
-                name: 'Pebble Beach Golf Links',
-                location: 'Pebble Beach, CA',
-                par: [4,5,4,4,3,5,3,4,4,4,4,3,4,5,4,3,3,5]
-            },
-            {
-                id: 'augusta',
-                name: 'Augusta National Golf Club',
-                location: 'Augusta, GA',
-                par: [4,5,4,3,4,3,4,5,4,4,4,3,5,4,5,3,4,4]
-            },
-            {
-                id: 'tpc-sawgrass',
-                name: 'TPC Sawgrass (Stadium)',
-                location: 'Ponte Vedra Beach, FL',
-                par: [4,5,3,4,4,4,4,3,5,4,4,3,4,4,5,3,4,4]
-            },
-            {
-                id: 'bethpage-black',
-                name: 'Bethpage Black',
-                location: 'Farmingdale, NY',
-                par: [4,4,3,5,4,4,4,3,4,4,4,4,5,3,4,4,3,4]
-            },
-            {
-                id: 'torrey-pines-south',
-                name: 'Torrey Pines (South)',
-                location: 'La Jolla, CA',
-                par: [4,4,3,4,4,3,4,3,5,4,4,3,5,4,4,5,3,4]
-            }
-        ];
+        const API_BASE = 'https://api.opengolfapi.org/v1';
+        let searchTimeout = null;
 
         const allPlayers = ['Mason', 'Sam', 'Sean', 'Jonah'];
         const SCRAMBLE_POINTS = { win: 10, loss: 5 };
@@ -802,10 +770,6 @@
             localStorage.setItem('customCourses', JSON.stringify(courses));
         }
 
-        function getAllCourses() {
-            return [...BUILTIN_COURSES, ...loadCustomCourses()];
-        }
-
         // ─── Tab switching ────────────────────────────────────────────────────
         function switchTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -830,21 +794,71 @@
         }
 
         function renderCourseList(tab) {
-            const query = document.getElementById(`${tab}-course-search`).value.toLowerCase();
-            const courses = getAllCourses().filter(c =>
-                c.name.toLowerCase().includes(query) ||
-                (c.location && c.location.toLowerCase().includes(query))
-            );
-
+            const query = document.getElementById(`${tab}-course-search`).value.trim();
             const container = document.getElementById(`${tab}-course-list`);
 
-            if (courses.length === 0) {
-                container.innerHTML = `<div class="no-courses-msg">No courses found — add one below!</div>`;
+            // Always show matching custom courses at the top
+            const custom = loadCustomCourses().filter(c =>
+                !query || c.name.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (query.length < 3) {
+                if (custom.length > 0) {
+                    container.innerHTML = buildCourseCardsHTML(custom, tab, false);
+                } else {
+                    container.innerHTML = `<div class="no-courses-msg">Start typing a course name to search 16,000+ courses...</div>`;
+                }
                 return;
             }
 
-            container.innerHTML = courses.map(c => `
-                <div class="course-card" onclick="selectCourse('${tab}', '${c.id}')">
+            container.innerHTML = (custom.length > 0 ? buildCourseCardsHTML(custom, tab, false) : '') +
+                `<div class="no-courses-msg" id="${tab}-search-status">Searching...</div>`;
+
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => doAPISearch(tab, query, custom), 400);
+        }
+
+        async function doAPISearch(tab, query, customResults) {
+            const container = document.getElementById(`${tab}-course-list`);
+            const statusEl = document.getElementById(`${tab}-search-status`);
+            try {
+                const res = await fetch(`${API_BASE}/courses/search?q=${encodeURIComponent(query)}`);
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+
+                // API may return array or object with courses key
+                const apiCourses = Array.isArray(data) ? data : (data.courses || data.results || []);
+
+                if (statusEl) statusEl.remove();
+
+                if (apiCourses.length === 0 && customResults.length === 0) {
+                    container.innerHTML = `<div class="no-courses-msg">No courses found — add one manually below</div>`;
+                    return;
+                }
+
+                const apiHTML = apiCourses.map(c => {
+                    const totalPar = c.par || (c.holes ? c.holes.reduce((a, h) => a + (h.par || 0), 0) : null);
+                    return `
+                        <div class="course-card" onclick="selectAPIcourse('${tab}', '${c.id}')">
+                            <div>
+                                <div class="course-card-name">${c.name}</div>
+                                <div class="course-card-meta">${c.city || ''}${c.city && c.state ? ', ' : ''}${c.state || ''}</div>
+                            </div>
+                            ${totalPar ? `<div class="course-card-par">Par ${totalPar}</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = buildCourseCardsHTML(customResults, tab, false) + apiHTML;
+
+            } catch (e) {
+                if (statusEl) statusEl.textContent = 'Search unavailable — add course manually below';
+            }
+        }
+
+        function buildCourseCardsHTML(courses, tab, isAPI) {
+            return courses.map(c => `
+                <div class="course-card" onclick="${isAPI ? `selectAPIcourse('${tab}','${c.id}')` : `selectCustomCourse('${tab}','${c.id}')`}">
                     <div>
                         <div class="course-card-name">${c.name}</div>
                         <div class="course-card-meta">${c.location || ''}</div>
@@ -854,12 +868,50 @@
             `).join('');
         }
 
-        function selectCourse(tab, courseId) {
-            const course = getAllCourses().find(c => c.id === courseId);
+        function selectCustomCourse(tab, courseId) {
+            const course = loadCustomCourses().find(c => c.id === courseId);
             if (!course) return;
             activeCourse[tab] = course;
             if (tab === 'scramble') showScrambleScorecard();
             else showStrokePlayScorecard();
+        }
+
+        async function selectAPIcourse(tab, courseId) {
+            const container = document.getElementById(`${tab}-course-list`);
+            container.innerHTML = `<div class="no-courses-msg">Loading course data...</div>`;
+            try {
+                const res = await fetch(`${API_BASE}/courses/${courseId}`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+
+                // Extract 18 hole pars — handle different response shapes
+                let holes = data.holes || data.tees?.[0]?.holes || [];
+                holes = holes.slice(0, 18);
+
+                let par;
+                if (holes.length === 18) {
+                    par = holes.map(h => h.par || 4);
+                } else if (holes.length === 9) {
+                    // 9-hole course — duplicate front 9
+                    const front = holes.map(h => h.par || 4);
+                    par = [...front, ...front];
+                } else {
+                    par = DEFAULT_PAR;
+                }
+
+                activeCourse[tab] = {
+                    id: courseId,
+                    name: data.name,
+                    location: `${data.city || ''}${data.city && data.state ? ', ' : ''}${data.state || ''}`,
+                    par
+                };
+
+                if (tab === 'scramble') showScrambleScorecard();
+                else showStrokePlayScorecard();
+
+            } catch (e) {
+                container.innerHTML = `<div class="no-courses-msg">Could not load course data — try adding it manually below</div>`;
+            }
         }
 
         // ─── Add Course Modal ─────────────────────────────────────────────────
