@@ -563,7 +563,10 @@
                 </div>
 
                 <div id="scramble-dashboard" class="screen">
-                    <button class="back-button" onclick="showScrambleLeagueSelect()">← Back to Leagues</button>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:25px;">
+                        <button class="back-button" style="margin-bottom:0;" onclick="showScrambleLeagueSelect()">← Back to Leagues</button>
+                        <button class="back-button" style="margin-bottom:0;" onclick="showLeagueSettings()">⚙ Settings</button>
+                    </div>
                     <h1 id="scramble-dashboard-title" style="color:#1e3a8a;margin-bottom:25px;"></h1>
                     <div class="dashboard">
                         <div class="dashboard-section">
@@ -604,25 +607,6 @@
                     <div id="scramble-course-badge"></div>
                     <div class="hole-tally" id="scramble-tally"></div>
 
-                    <div class="player-inputs">
-                        <div class="input-group">
-                            <label id="scramble-sc-t1p1-label"></label>
-                            <input type="text" id="scramble-sc-t1p1" disabled style="background:#f3f4f6;">
-                        </div>
-                        <div class="input-group">
-                            <label id="scramble-sc-t1p2-label"></label>
-                            <input type="text" id="scramble-sc-t1p2" disabled style="background:#f3f4f6;">
-                        </div>
-                        <div class="input-group">
-                            <label id="scramble-sc-t2p1-label"></label>
-                            <input type="text" id="scramble-sc-t2p1" disabled style="background:#f3f4f6;">
-                        </div>
-                        <div class="input-group">
-                            <label id="scramble-sc-t2p2-label"></label>
-                            <input type="text" id="scramble-sc-t2p2" disabled style="background:#f3f4f6;">
-                        </div>
-                    </div>
-
                     <div class="scorecard">
                         <table>
                             <thead>
@@ -639,6 +623,7 @@
 
                     <div class="button-group">
                         <button class="btn-secondary" onclick="resetScrambleScorecard()">Reset</button>
+                        <button class="btn-primary" style="background:#f59e0b;" onclick="saveAndExitScramble()">Save & Exit</button>
                         <button class="btn-primary" onclick="recordScrambleRound()">Record Round</button>
                     </div>
                 </div>
@@ -758,6 +743,35 @@
             <div class="button-group">
                 <button class="btn-secondary" onclick="closeCreateLeagueModal()">Cancel</button>
                 <button class="btn-primary" onclick="createScrambleLeague()">Create League</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- League Settings Modal -->
+    <div id="league-settings-modal" class="modal">
+        <div class="modal-content">
+            <h2>League Settings</h2>
+            <div class="input-group">
+                <label>League Name</label>
+                <input type="text" id="settings-league-name">
+            </div>
+            <div class="input-group">
+                <label>Team 1</label>
+                <div style="display:flex;gap:8px;">
+                    <input type="text" id="settings-t1p1" style="flex:1;">
+                    <input type="text" id="settings-t1p2" style="flex:1;">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Team 2</label>
+                <div style="display:flex;gap:8px;">
+                    <input type="text" id="settings-t2p1" style="flex:1;">
+                    <input type="text" id="settings-t2p2" style="flex:1;">
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="closeLeagueSettings()">Cancel</button>
+                <button class="btn-primary" onclick="saveLeagueSettings()">Save</button>
             </div>
         </div>
     </div>
@@ -934,6 +948,12 @@
 
         // ─── Course selection ─────────────────────────────────────────────────
         function showScrambleCourseSelect() {
+            const draft = getDraft(currentScrambleLeagueId);
+            if (draft) {
+                const resume = confirm(`You have a saved round from ${draft.savedAt} at ${draft.course ? draft.course.name : 'unknown course'}.\n\nResume it?`);
+                if (resume) { resumeDraft(draft); return; }
+                clearDraft(currentScrambleLeagueId);
+            }
             setScreen('scramble', 'scramble-course-select');
             document.getElementById('scramble-course-search').value = '';
             renderCourseList('scramble');
@@ -1207,14 +1227,6 @@
                 ? `<span class="current-course-badge">⛳ ${course.name}</span>`
                 : '';
 
-            document.getElementById('scramble-sc-t1p1-label').textContent = 'Team 1: ' + league.team1[0];
-            document.getElementById('scramble-sc-t1p2-label').textContent = 'Team 1: ' + league.team1[1];
-            document.getElementById('scramble-sc-t2p1-label').textContent = 'Team 2: ' + league.team2[0];
-            document.getElementById('scramble-sc-t2p2-label').textContent = 'Team 2: ' + league.team2[1];
-            document.getElementById('scramble-sc-t1p1').value = league.team1[0];
-            document.getElementById('scramble-sc-t1p2').value = league.team1[1];
-            document.getElementById('scramble-sc-t2p1').value = league.team2[0];
-            document.getElementById('scramble-sc-t2p2').value = league.team2[1];
             document.getElementById('scramble-sc-team1-header').textContent = league.team1.join(' & ');
             document.getElementById('scramble-sc-team2-header').textContent = league.team2.join(' & ');
 
@@ -1352,6 +1364,7 @@
             });
 
             saveData(data);
+            clearDraft(currentScrambleLeagueId);
             alert(`Round recorded!\n${t1Name} (${t1Total}): ${t1Points} pts\n${t2Name} (${t2Total}): ${t2Points} pts`);
             showScrambleDashboard();
         }
@@ -1599,6 +1612,86 @@
             const existing = league.standings.find(p => p.name === playerName);
             if (existing) { existing.points += points; existing.rounds += 1; }
             else league.standings.push({ name: playerName, points, rounds: 1 });
+        }
+
+        // ─── Draft rounds ─────────────────────────────────────────────────────
+        function getDrafts() {
+            return JSON.parse(localStorage.getItem('draftRounds') || '{}');
+        }
+        function saveDrafts(d) {
+            localStorage.setItem('draftRounds', JSON.stringify(d));
+        }
+        function getDraft(leagueId) {
+            return getDrafts()[leagueId] || null;
+        }
+        function clearDraft(leagueId) {
+            const d = getDrafts();
+            delete d[leagueId];
+            saveDrafts(d);
+        }
+
+        function saveAndExitScramble() {
+            const scores = {};
+            document.querySelectorAll('#scramble-scorecard-body .score-cell').forEach(c => {
+                if (c.dataset.value) scores[`${c.dataset.hole}-${c.dataset.team}`] = c.dataset.value;
+            });
+            const drafts = getDrafts();
+            drafts[currentScrambleLeagueId] = {
+                course: activeCourse.scramble,
+                scores,
+                savedAt: new Date().toLocaleDateString()
+            };
+            saveDrafts(drafts);
+            showScrambleDashboard();
+        }
+
+        function resumeDraft(draft) {
+            activeCourse.scramble = draft.course;
+            showScrambleScorecard();
+            // Restore scores after DOM is built
+            setTimeout(() => {
+                Object.entries(draft.scores).forEach(([key, val]) => {
+                    const [hole, team] = key.split('-');
+                    const cell = document.querySelector(`#scramble-scorecard-body .score-cell[data-hole="${hole}"][data-team="${team}"]`);
+                    if (cell) { cell.dataset.value = val; cell.textContent = val; }
+                });
+                updateScramblesScorecard();
+            }, 50);
+        }
+
+        // ─── League settings ──────────────────────────────────────────────────
+        function showLeagueSettings() {
+            const data = loadData();
+            const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
+            if (!league) return;
+            document.getElementById('settings-league-name').value = league.name;
+            document.getElementById('settings-t1p1').value = league.team1[0];
+            document.getElementById('settings-t1p2').value = league.team1[1];
+            document.getElementById('settings-t2p1').value = league.team2[0];
+            document.getElementById('settings-t2p2').value = league.team2[1];
+            document.getElementById('league-settings-modal').classList.add('active');
+        }
+
+        function closeLeagueSettings() {
+            document.getElementById('league-settings-modal').classList.remove('active');
+        }
+
+        function saveLeagueSettings() {
+            const data = loadData();
+            const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
+            if (!league) return;
+            league.name = document.getElementById('settings-league-name').value.trim() || league.name;
+            league.team1 = [
+                document.getElementById('settings-t1p1').value.trim() || league.team1[0],
+                document.getElementById('settings-t1p2').value.trim() || league.team1[1]
+            ];
+            league.team2 = [
+                document.getElementById('settings-t2p1').value.trim() || league.team2[0],
+                document.getElementById('settings-t2p2').value.trim() || league.team2[1]
+            ];
+            saveData(data);
+            closeLeagueSettings();
+            updateScrambleDashboard();
         }
 
         // ─── Keypad ───────────────────────────────────────────────────────────
