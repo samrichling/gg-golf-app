@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golf League Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #165e4c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f5e3c 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-button:hover {
+            background: #f3f4f6;
+        }
+
+        .tab-button.active {
+            color: #1e3a8a;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #1e3a8a;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: #e5e7eb;
+            color: #1f2937;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #d1d5db;
+        }
+
+        .league-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .league-card {
+            padding: 20px;
+            background: linear-gradient(135deg, #dbeafe 0%, #e5e7ff 100%);
+            border: 2px solid #bfdbfe;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .league-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+            border-color: #1e3a8a;
+        }
+
+        .league-card h3 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .league-card p {
+            color: #374151;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+
+        .add-league-btn {
+            padding: 20px;
+            background: #f0f9ff;
+            border: 2px dashed #1e3a8a;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .add-league-btn:hover {
+            background: #e0f2fe;
+        }
+
+        .add-league-btn p {
+            color: #1e3a8a;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .dashboard {
+            display: grid;
+            gap: 30px;
+        }
+
+        .dashboard-section {
+            background: #f9fafb;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        .dashboard-section h2 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: #1e3a8a;
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .standings-table th, .standings-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .standings-table th {
+            background: #1e3a8a;
+            color: white;
+            font-weight: 700;
+        }
+
+        .standings-table tbody tr:hover {
+            background: #f0f1ff;
+        }
+
+        .standings-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rank-1 { font-weight: 700; }
+        .rank-1 td:first-child::before { content: '🥇 '; }
+        .rank-2 td:first-child::before { content: '🥈 '; }
+        .rank-3 td:first-child::before { content: '🥉 '; }
+
+        .round-history {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .round-entry {
+            padding: 15px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .round-entry-title {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .round-entry-detail {
+            color: #6b7280;
+            font-size: 0.95em;
+            margin-bottom: 4px;
+        }
+
+        .play-round-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: background 0.3s;
+        }
+
+        .play-round-btn:hover {
+            background: #059669;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9em;
+        }
+
+        .input-group input {
+            padding: 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .player-inputs {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .scorecard {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            font-weight: 600;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            font-size: 0.95em;
+        }
+
+        td {
+            font-size: 0.95em;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tr:hover {
+            background: #f0f1ff;
+        }
+
+        .hole-input {
+            width: 50px;
+            padding: 8px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.95em;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .hole-input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+
+        .total-row {
+            font-weight: 700;
+            background: #f3f4f6 !important;
+            font-size: 1.05em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 12px 20px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05em;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 12px 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05em;
+            transition: background 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #dc2626;
+        }
+
+        .team-label {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        .modal-content .button-group {
+            margin-top: 20px;
+        }
+
+        .player-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .player-select select {
+            padding: 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .player-select select:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+
+        .vs-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #1e3a8a;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⛳ Golf League Tracker</h1>
+            <p>Track your rounds and standings</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('scramble')">2v2 Scramble</button>
+            <button class="tab-button" onclick="switchTab('strokeplay')">Stroke Play</button>
+        </div>
+
+        <div class="content">
+            <!-- SCRAMBLE TAB -->
+            <div id="scramble" class="tab-content active">
+                <!-- League Selection Screen -->
+                <div id="scramble-league-select" class="screen active">
+                    <h2 style="color: #1e3a8a; margin-bottom: 20px;">Select or Create a League</h2>
+                    <div class="league-grid" id="scramble-leagues"></div>
+                    <div class="add-league-btn" onclick="showCreateScrambleLeague()">
+                        <p>+ Create New League</p>
+                    </div>
+                </div>
+
+                <!-- League Dashboard Screen -->
+                <div id="scramble-dashboard" class="screen">
+                    <button class="back-button" onclick="showScrambleLeagueSelect()">← Back to Leagues</button>
+
+                    <h1 id="scramble-dashboard-title" style="color: #1e3a8a; margin-bottom: 25px;"></h1>
+
+                    <div class="dashboard">
+                        <!-- Stats -->
+                        <div class="dashboard-section">
+                            <h2>Standings</h2>
+                            <div class="stats-grid" id="scramble-stats"></div>
+                            <table class="standings-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Team</th>
+                                        <th>Points</th>
+                                        <th>Rounds</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scramble-standings-body">
+                                    <tr><td colspan="4">No rounds yet</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- History -->
+                        <div class="dashboard-section">
+                            <h2>Round History</h2>
+                            <div class="round-history" id="scramble-history-list"></div>
+                        </div>
+
+                        <button class="play-round-btn" onclick="showScrambleScorecard()">▶ Play New Round</button>
+                    </div>
+                </div>
+
+                <!-- Scorecard Screen -->
+                <div id="scramble-scorecard" class="screen">
+                    <button class="back-button" onclick="showScrambleDashboard()">← Back to Dashboard</button>
+
+                    <div class="player-inputs">
+                        <div class="input-group">
+                            <label id="scramble-sc-t1p1-label"></label>
+                            <input type="text" id="scramble-sc-t1p1" disabled style="background: #f3f4f6;">
+                        </div>
+                        <div class="input-group">
+                            <label id="scramble-sc-t1p2-label"></label>
+                            <input type="text" id="scramble-sc-t1p2" disabled style="background: #f3f4f6;">
+                        </div>
+                        <div class="input-group">
+                            <label id="scramble-sc-t2p1-label"></label>
+                            <input type="text" id="scramble-sc-t2p1" disabled style="background: #f3f4f6;">
+                        </div>
+                        <div class="input-group">
+                            <label id="scramble-sc-t2p2-label"></label>
+                            <input type="text" id="scramble-sc-t2p2" disabled style="background: #f3f4f6;">
+                        </div>
+                    </div>
+
+                    <div class="scorecard">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hole</th>
+                                    <th>Par</th>
+                                    <th id="scramble-sc-team1-header" class="team-label">Team 1</th>
+                                    <th id="scramble-sc-team2-header" class="team-label">Team 2</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scramble-scorecard-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn-secondary" onclick="resetScrambleScorecard()">Reset</button>
+                        <button class="btn-primary" onclick="recordScrambleRound()">Record Round</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STROKE PLAY TAB -->
+            <div id="strokeplay" class="tab-content">
+                <!-- League Selection Screen -->
+                <div id="strokeplay-league-select" class="screen active">
+                    <h2 style="color: #1e3a8a; margin-bottom: 20px;">Select a League</h2>
+                    <div class="league-grid" id="strokeplay-leagues"></div>
+                </div>
+
+                <!-- League Dashboard -->
+                <div id="strokeplay-dashboard" class="screen">
+                    <button class="back-button" onclick="showStrokePlayLeagueSelect()">← Back to Leagues</button>
+                    <h1 id="strokeplay-dashboard-title" style="color: #1e3a8a; margin-bottom: 25px;"></h1>
+
+                    <div class="dashboard">
+                        <!-- Stats -->
+                        <div class="dashboard-section">
+                            <h2>Standings</h2>
+                            <table class="standings-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Player</th>
+                                        <th>Points</th>
+                                        <th>Rounds</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stroke-standings-body">
+                                    <tr><td colspan="4">No rounds yet</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- History -->
+                        <div class="dashboard-section">
+                            <h2>Round History</h2>
+                            <div class="round-history" id="stroke-history-list"></div>
+                        </div>
+
+                        <button class="play-round-btn" onclick="showStrokePlayScorecard()">▶ Play New Round</button>
+                    </div>
+                </div>
+
+                <!-- Scorecard Screen -->
+                <div id="strokeplay-scorecard" class="screen">
+                    <button class="back-button" onclick="showStrokePlayDashboard()">← Back to Dashboard</button>
+
+                    <div class="player-inputs">
+                        <div class="input-group">
+                            <label>Player 1 Name</label>
+                            <input type="text" id="stroke-p1" placeholder="e.g., Mason" value="Mason">
+                        </div>
+                        <div class="input-group">
+                            <label>Player 2 Name</label>
+                            <input type="text" id="stroke-p2" placeholder="e.g., Sam" value="Sam">
+                        </div>
+                        <div class="input-group">
+                            <label>Player 3 Name</label>
+                            <input type="text" id="stroke-p3" placeholder="e.g., Sean" value="Sean">
+                        </div>
+                        <div class="input-group">
+                            <label>Player 4 Name</label>
+                            <input type="text" id="stroke-p4" placeholder="e.g., Jonah" value="Jonah">
+                        </div>
+                    </div>
+
+                    <div class="scorecard">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hole</th>
+                                    <th>Par</th>
+                                    <th id="stroke-p1-header">Mason</th>
+                                    <th id="stroke-p2-header">Sam</th>
+                                    <th id="stroke-p3-header">Sean</th>
+                                    <th id="stroke-p4-header">Jonah</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stroke-scorecard-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn-secondary" onclick="resetStrokePlayScorecard()">Reset</button>
+                        <button class="btn-primary" onclick="recordStrokePlayRound()">Record Round</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create League Modal -->
+    <div id="create-league-modal" class="modal">
+        <div class="modal-content">
+            <h2>Create New Scramble League</h2>
+            <div class="input-group">
+                <label>League Name</label>
+                <input type="text" id="league-name-input" placeholder="e.g., Mason & Sam vs Sean & Jonah">
+            </div>
+            <div class="input-group">
+                <label>Team 1 Players</label>
+            </div>
+            <div class="player-select">
+                <select id="league-t1p1"></select>
+                <select id="league-t1p2"></select>
+            </div>
+            <div class="vs-text">vs</div>
+            <div class="input-group">
+                <label>Team 2 Players</label>
+            </div>
+            <div class="player-select">
+                <select id="league-t2p1"></select>
+                <select id="league-t2p2"></select>
+            </div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="closeCreateLeagueModal()">Cancel</button>
+                <button class="btn-primary" onclick="createScrambleLeague()">Create League</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const par = [4, 4, 3, 5, 4, 3, 4, 5, 4, 4, 3, 4, 5, 4, 3, 4, 4, 5];
+        const allPlayers = ['Mason', 'Sam', 'Sean', 'Jonah'];
+        const SCRAMBLE_POINTS = { win: 10, loss: 5 };
+        const STROKE_PLAY_POINTS = { 1: 10, 2: 8, 3: 6, 4: 4 };
+
+        let currentScrambleLeagueId = null;
+        let currentStrokePlayLeagueId = null;
+
+        function loadData() {
+            const saved = localStorage.getItem('golfData');
+            return saved ? JSON.parse(saved) : {
+                scrambleLeagues: [
+                    {
+                        id: Date.now(),
+                        name: 'Mason & Sam vs Sean & Jonah',
+                        team1: ['Mason', 'Sam'],
+                        team2: ['Sean', 'Jonah'],
+                        standings: [],
+                        history: []
+                    }
+                ],
+                strokePlayLeagues: [
+                    {
+                        id: Date.now() + 1,
+                        name: 'Mini Majors',
+                        players: ['Mason', 'Sam', 'Sean', 'Jonah'],
+                        standings: [],
+                        history: []
+                    }
+                ]
+            };
+        }
+
+        function saveData(data) {
+            localStorage.setItem('golfData', JSON.stringify(data));
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tab === 'scramble') {
+                showScrambleLeagueSelect();
+            } else if (tab === 'strokeplay') {
+                showStrokePlayLeagueSelect();
+            }
+        }
+
+        // SCRAMBLE FUNCTIONS
+        function showScrambleLeagueSelect() {
+            document.getElementById('scramble-league-select').classList.add('active');
+            document.getElementById('scramble-dashboard').classList.remove('active');
+            document.getElementById('scramble-scorecard').classList.remove('active');
+            renderScrambleLeagues();
+        }
+
+        function showScrambleDashboard() {
+            document.getElementById('scramble-league-select').classList.remove('active');
+            document.getElementById('scramble-dashboard').classList.add('active');
+            document.getElementById('scramble-scorecard').classList.remove('active');
+            updateScrambleDashboard();
+        }
+
+        function showScrambleScorecard() {
+            document.getElementById('scramble-league-select').classList.remove('active');
+            document.getElementById('scramble-dashboard').classList.remove('active');
+            document.getElementById('scramble-scorecard').classList.add('active');
+            initScrambleScorecard();
+        }
+
+        function renderScrambleLeagues() {
+            const data = loadData();
+            const container = document.getElementById('scramble-leagues');
+            container.innerHTML = data.scrambleLeagues.map(league => `
+                <div class="league-card" onclick="selectScrambleLeague(${league.id})">
+                    <h3>${league.name}</h3>
+                    <p><strong>Team 1:</strong> ${league.team1.join(' & ')}</p>
+                    <p><strong>Team 2:</strong> ${league.team2.join(' & ')}</p>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #059669;"><strong>${league.standings.length}</strong> round(s) played</p>
+                </div>
+            `).join('');
+        }
+
+        function selectScrambleLeague(leagueId) {
+            currentScrambleLeagueId = leagueId;
+            showScrambleDashboard();
+        }
+
+        function updateScrambleDashboard() {
+            const data = loadData();
+            const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
+
+            if (!league) return;
+
+            document.getElementById('scramble-dashboard-title').textContent = league.name;
+
+            // Stats
+            const statsHTML = `
+                <div class="stat-box">
+                    <div class="stat-label">Total Rounds</div>
+                    <div class="stat-value">${league.history.length}</div>
+                </div>
+            `;
+            document.getElementById('scramble-stats').innerHTML = statsHTML;
+
+            // Standings
+            const standings = [...league.standings].sort((a, b) => b.points - a.points || b.rounds - a.rounds);
+            const standingsHTML = standings.length === 0
+                ? '<tr><td colspan="4" style="text-align: center; color: #9ca3af;">No rounds recorded yet</td></tr>'
+                : standings.map((team, idx) => `
+                    <tr class="rank-${idx + 1}">
+                        <td>${idx + 1}</td>
+                        <td>${team.name}</td>
+                        <td style="font-weight: 700; color: #1e3a8a;">${team.points}</td>
+                        <td>${team.rounds}</td>
+                    </tr>
+                `).join('');
+            document.getElementById('scramble-standings-body').innerHTML = standingsHTML;
+
+            // History
+            const historyHTML = league.history.length === 0
+                ? '<p style="color: #9ca3af;">No rounds played yet</p>'
+                : league.history.map(round => `
+                    <div class="round-entry">
+                        <div class="round-entry-title">${round.date}</div>
+                        <div class="round-entry-detail">${round.team1} (${round.team1Score}): <strong>${round.team1Points} pts</strong></div>
+                        <div class="round-entry-detail">${round.team2} (${round.team2Score}): <strong>${round.team2Points} pts</strong></div>
+                        <div class="round-entry-detail" style="margin-top: 8px; color: #059669; font-weight: 600;">Winner: ${round.winner}</div>
+                    </div>
+                `).reverse().join('');
+            document.getElementById('scramble-history-list').innerHTML = historyHTML;
+        }
+
+        function initScrambleScorecard() {
+            const data = loadData();
+            const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
+
+            if (!league) return;
+
+            // Set player labels
+            document.getElementById('scramble-sc-t1p1-label').textContent = 'Team 1: ' + league.team1[0];
+            document.getElementById('scramble-sc-t1p2-label').textContent = 'Team 1: ' + league.team1[1];
+            document.getElementById('scramble-sc-t2p1-label').textContent = 'Team 2: ' + league.team2[0];
+            document.getElementById('scramble-sc-t2p2-label').textContent = 'Team 2: ' + league.team2[1];
+
+            document.getElementById('scramble-sc-t1p1').value = league.team1[0];
+            document.getElementById('scramble-sc-t1p2').value = league.team1[1];
+            document.getElementById('scramble-sc-t2p1').value = league.team2[0];
+            document.getElementById('scramble-sc-t2p2').value = league.team2[1];
+
+            document.getElementById('scramble-sc-team1-header').textContent = league.team1.join(' & ');
+            document.getElementById('scramble-sc-team2-header').textContent = league.team2.join(' & ');
+
+            // Build scorecard
+            const tbody = document.getElementById('scramble-scorecard-body');
+            tbody.innerHTML = '';
+
+            for (let i = 0; i < 18; i++) {
+                if (i === 9) {
+                    const frontRow = document.createElement('tr');
+                    frontRow.className = 'total-row';
+                    frontRow.innerHTML = `
+                        <td>Front 9</td>
+                        <td>${par.slice(0, 9).reduce((a, b) => a + b, 0)}</td>
+                        <td><strong id="scramble-front-t1">0</strong></td>
+                        <td><strong id="scramble-front-t2">0</strong></td>
+                    `;
+                    tbody.appendChild(frontRow);
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${par[i]}</td>
+                    <td><input type="number" class="hole-input" data-hole="${i}" data-team="1" onchange="updateScramblesScorecard()"></td>
+                    <td><input type="number" class="hole-input" data-hole="${i}" data-team="2" onchange="updateScramblesScorecard()"></td>
+                `;
+                tbody.appendChild(row);
+            }
+
+            const backRow = document.createElement('tr');
+            backRow.className = 'total-row';
+            backRow.innerHTML = `
+                <td>Back 9</td>
+                <td>${par.slice(9, 18).reduce((a, b) => a + b, 0)}</td>
+                <td><strong id="scramble-back-t1">0</strong></td>
+                <td><strong id="scramble-back-t2">0</strong></td>
+            `;
+            tbody.appendChild(backRow);
+
+            const totalRow = document.createElement('tr');
+            totalRow.className = 'total-row';
+            totalRow.innerHTML = `
+                <td>TOTAL</td>
+                <td>${par.reduce((a, b) => a + b, 0)}</td>
+                <td><strong id="scramble-total-t1">0</strong></td>
+                <td><strong id="scramble-total-t2">0</strong></td>
+            `;
+            tbody.appendChild(totalRow);
+        }
+
+        function updateScramblesScorecard() {
+            const team1Scores = [];
+            const team2Scores = [];
+
+            document.querySelectorAll('#scramble-scorecard input[data-team="1"]').forEach(input => {
+                const val = input.value ? parseInt(input.value) : null;
+                if (val !== null) team1Scores.push(val);
+            });
+
+            document.querySelectorAll('#scramble-scorecard input[data-team="2"]').forEach(input => {
+                const val = input.value ? parseInt(input.value) : null;
+                if (val !== null) team2Scores.push(val);
+            });
+
+            const team1Front = team1Scores.slice(0, 9).reduce((a, b) => a + b, 0);
+            const team2Front = team2Scores.slice(0, 9).reduce((a, b) => a + b, 0);
+            document.getElementById('scramble-front-t1').textContent = team1Front || 0;
+            document.getElementById('scramble-front-t2').textContent = team2Front || 0;
+
+            const team1Back = team1Scores.slice(9, 18).reduce((a, b) => a + b, 0);
+            const team2Back = team2Scores.slice(9, 18).reduce((a, b) => a + b, 0);
+            document.getElementById('scramble-back-t1').textContent = team1Back || 0;
+            document.getElementById('scramble-back-t2').textContent = team2Back || 0;
+
+            const team1Total = team1Scores.reduce((a, b) => a + b, 0);
+            const team2Total = team2Scores.reduce((a, b) => a + b, 0);
+            document.getElementById('scramble-total-t1').textContent = team1Total || 0;
+            document.getElementById('scramble-total-t2').textContent = team2Total || 0;
+        }
+
+        function resetScrambleScorecard() {
+            document.querySelectorAll('#scramble-scorecard input[type="number"]').forEach(input => input.value = '');
+            updateScramblesScorecard();
+        }
+
+        function recordScrambleRound() {
+            const data = loadData();
+            const league = data.scrambleLeagues.find(l => l.id === currentScrambleLeagueId);
+
+            if (!league) return;
+
+            const team1Scores = [];
+            const team2Scores = [];
+
+            document.querySelectorAll('#scramble-scorecard input[data-team="1"]').forEach(input => {
+                const val = input.value ? parseInt(input.value) : null;
+                if (val !== null) team1Scores.push(val);
+            });
+
+            document.querySelectorAll('#scramble-scorecard input[data-team="2"]').forEach(input => {
+                const val = input.value ? parseInt(input.value) : null;
+                if (val !== null) team2Scores.push(val);
+            });
+
+            if (team1Scores.length < 18 || team2Scores.length < 18) {
+                alert('Please fill in all 18 holes');
+                return;
+            }
+
+            const team1Total = team1Scores.reduce((a, b) => a + b, 0);
+            const team2Total = team2Scores.reduce((a, b) => a + b, 0);
+
+            let team1Wins = 0;
+            for (let i = 0; i < 18; i++) {
+                if (team1Scores[i] < team2Scores[i]) team1Wins++;
+            }
+
+            const team1Name = league.team1.join(' & ');
+            const team2Name = league.team2.join(' & ');
+            const team1Points = team1Wins > 9 ? SCRAMBLE_POINTS.win : SCRAMBLE_POINTS.loss;
+            const team2Points = team2Wins > 9 ? SCRAMBLE_POINTS.win : SCRAMBLE_POINTS.loss;
+
+            updateTeamStanding(league, team1Name, team1Points);
+            updateTeamStanding(league, team2Name, team2Points);
+
+            league.history.push({
+                date: new Date().toLocaleDateString(),
+                team1: team1Name,
+                team1Score: team1Total,
+                team1Points: team1Points,
+                team2: team2Name,
+                team2Score: team2Total,
+                team2Points: team2Points,
+                winner: team1Total < team2Total ? team1Name : team2Total < team1Total ? team2Name : 'Tie'
+            });
+
+            saveData(data);
+            alert(`Round recorded! ${team1Name} (${team1Total}): ${team1Points} pts\n${team2Name} (${team2Total}): ${team2Points} pts`);
+            showScrambleDashboard();
+        }
+
+        function updateTeamStanding(league, teamName, points) {
+            const existing = league.standings.find(t => t.name === teamName);
+            if (existing) {
+                existing.points += points;
+                existing.rounds += 1;
+            } else {
+                league.standings.push({ name: teamName, points, rounds: 1 });
+            }
+        }
+
+        function showCreateScrambleLeague() {
+            document.getElementById('create-league-modal').classList.add('active');
+            populatePlayerSelects();
+        }
+
+        function populatePlayerSelects() {
+            const selects = ['league-t1p1', 'league-t1p2', 'league-t2p1', 'league-t2p2'];
+            selects.forEach(id => {
+                document.getElementById(id).innerHTML = allPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
+            });
+        }
+
+        function createScrambleLeague() {
+            const name = document.getElementById('league-name-input').value.trim();
+            const t1p1 = document.getElementById('league-t1p1').value;
+            const t1p2 = document.getElementById('league-t1p2').value;
+            const t2p1 = document.getElementById('league-t2p1').value;
+            const t2p2 = document.getElementById('league-t2p2').value;
+
+            if (!name) {
+                alert('Please enter a league name');
+                return;
+            }
+
+            if (t1p1 === t1p2 || t2p1 === t2p2 || t1p1 === t2p1 && t1p2 === t2p2 || t1p1 === t2p2 && t1p2 === t2p1) {
+                alert('Please select valid team combinations');
+                return;
+            }
+
+            const data = loadData();
+            data.scrambleLeagues.push({
+                id: Date.now(),
+                name,
+                team1: [t1p1, t1p2],
+                team2: [t2p1, t2p2],
+                standings: [],
+                history: []
+            });
+
+            saveData(data);
+            closeCreateLeagueModal();
+            renderScrambleLeagues();
+        }
+
+        function closeCreateLeagueModal() {
+            document.getElementById('create-league-modal').classList.remove('active');
+            document.getElementById('league-name-input').value = '';
+        }
+
+        // STROKE PLAY FUNCTIONS
+        function showStrokePlayLeagueSelect() {
+            document.getElementById('strokeplay-league-select').classList.add('active');
+            document.getElementById('strokeplay-dashboard').classList.remove('active');
+            document.getElementById('strokeplay-scorecard').classList.remove('active');
+            renderStrokePlayLeagues();
+        }
+
+        function renderStrokePlayLeagues() {
+            const data = loadData();
+            const container = document.getElementById('strokeplay-leagues');
+            container.innerHTML = data.strokePlayLeagues.map(league => `
+                <div class="league-card" onclick="selectStrokePlayLeague(${league.id})">
+                    <h3>${league.name}</h3>
+                    <p><strong>Players:</strong> ${league.players.join(', ')}</p>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #059669;"><strong>${league.standings.length}</strong> round(s) played</p>
+                </div>
+            `).join('');
+        }
+
+        function selectStrokePlayLeague(leagueId) {
+            currentStrokePlayLeagueId = leagueId;
+            showStrokePlayDashboard();
+        }
+
+        function showStrokePlayDashboard() {
+            document.getElementById('strokeplay-league-select').classList.remove('active');
+            document.getElementById('strokeplay-dashboard').classList.add('active');
+            document.getElementById('strokeplay-scorecard').classList.remove('active');
+            updateStrokePlayDashboard();
+        }
+
+        function showStrokePlayScorecard() {
+            document.getElementById('strokeplay-league-select').classList.remove('active');
+            document.getElementById('strokeplay-dashboard').classList.remove('active');
+            document.getElementById('strokeplay-scorecard').classList.add('active');
+            initStrokePlayScorecard();
+        }
+
+        function updateStrokePlayDashboard() {
+            const data = loadData();
+            const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
+
+            if (!league) return;
+
+            document.getElementById('strokeplay-dashboard-title').textContent = league.name;
+
+            const standings = [...league.standings].sort((a, b) => b.points - a.points || b.rounds - a.rounds);
+            const standingsHTML = standings.length === 0
+                ? '<tr><td colspan="4" style="text-align: center; color: #9ca3af;">No rounds recorded yet</td></tr>'
+                : standings.map((player, idx) => `
+                    <tr class="rank-${idx + 1}">
+                        <td>${idx + 1}</td>
+                        <td>${player.name}</td>
+                        <td style="font-weight: 700; color: #1e3a8a;">${player.points}</td>
+                        <td>${player.rounds}</td>
+                    </tr>
+                `).join('');
+            document.getElementById('stroke-standings-body').innerHTML = standingsHTML;
+
+            const historyHTML = league.history.length === 0
+                ? '<p style="color: #9ca3af;">No rounds played yet</p>'
+                : league.history.map(round => `
+                    <div class="round-entry">
+                        <div class="round-entry-title">${round.date}</div>
+                        ${round.results.map((r, idx) => `<div class="round-entry-detail">${idx + 1}. ${r.name}: ${r.score} - <strong>${r.points} pts</strong></div>`).join('')}
+                    </div>
+                `).reverse().join('');
+            document.getElementById('stroke-history-list').innerHTML = historyHTML;
+        }
+
+        function initStrokePlayScorecard() {
+            const data = loadData();
+            const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
+
+            if (!league) return;
+
+            document.getElementById('stroke-p1').value = league.players[0];
+            document.getElementById('stroke-p2').value = league.players[1];
+            document.getElementById('stroke-p3').value = league.players[2];
+            document.getElementById('stroke-p4').value = league.players[3];
+
+            updateStrokePlayHeaders();
+
+            const tbody = document.getElementById('stroke-scorecard-body');
+            tbody.innerHTML = '';
+
+            for (let i = 0; i < 18; i++) {
+                if (i === 9) {
+                    const frontRow = document.createElement('tr');
+                    frontRow.className = 'total-row';
+                    frontRow.innerHTML = `
+                        <td>Front 9</td>
+                        <td>${par.slice(0, 9).reduce((a, b) => a + b, 0)}</td>
+                        <td><strong id="stroke-front-p1">0</strong></td>
+                        <td><strong id="stroke-front-p2">0</strong></td>
+                        <td><strong id="stroke-front-p3">0</strong></td>
+                        <td><strong id="stroke-front-p4">0</strong></td>
+                    `;
+                    tbody.appendChild(frontRow);
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${par[i]}</td>
+                    <td><input type="number" class="hole-input" data-hole="${i}" data-player="1" onchange="updateStrokePlayScorecard()"></td>
+                    <td><input type="number" class="hole-input" data-hole="${i}" data-player="2" onchange="updateStrokePlayScorecard()"></td>
+                    <td><input type="number" class="hole-input" data-hole="${i}" data-player="3" onchange="updateStrokePlayScorecard()"></td>
+                    <td><input type="number" class="hole-input" data-hole="${i}" data-player="4" onchange="updateStrokePlayScorecard()"></td>
+                `;
+                tbody.appendChild(row);
+            }
+
+            const backRow = document.createElement('tr');
+            backRow.className = 'total-row';
+            backRow.innerHTML = `
+                <td>Back 9</td>
+                <td>${par.slice(9, 18).reduce((a, b) => a + b, 0)}</td>
+                <td><strong id="stroke-back-p1">0</strong></td>
+                <td><strong id="stroke-back-p2">0</strong></td>
+                <td><strong id="stroke-back-p3">0</strong></td>
+                <td><strong id="stroke-back-p4">0</strong></td>
+            `;
+            tbody.appendChild(backRow);
+
+            const totalRow = document.createElement('tr');
+            totalRow.className = 'total-row';
+            totalRow.innerHTML = `
+                <td>TOTAL</td>
+                <td>${par.reduce((a, b) => a + b, 0)}</td>
+                <td><strong id="stroke-total-p1">0</strong></td>
+                <td><strong id="stroke-total-p2">0</strong></td>
+                <td><strong id="stroke-total-p3">0</strong></td>
+                <td><strong id="stroke-total-p4">0</strong></td>
+            `;
+            tbody.appendChild(totalRow);
+        }
+
+        function updateStrokePlayHeaders() {
+            for (let p = 1; p <= 4; p++) {
+                const name = document.getElementById(`stroke-p${p}`).value || `Player ${p}`;
+                document.getElementById(`stroke-p${p}-header`).textContent = name;
+            }
+        }
+
+        function updateStrokePlayScorecard() {
+            updateStrokePlayHeaders();
+
+            for (let p = 1; p <= 4; p++) {
+                const scores = [];
+                document.querySelectorAll(`#strokeplay-scorecard input[data-player="${p}"]`).forEach(input => {
+                    const val = input.value ? parseInt(input.value) : null;
+                    if (val !== null) scores.push(val);
+                });
+
+                const total = scores.reduce((a, b) => a + b, 0);
+                const front = scores.slice(0, 9).reduce((a, b) => a + b, 0);
+                const back = scores.slice(9, 18).reduce((a, b) => a + b, 0);
+
+                document.getElementById(`stroke-total-p${p}`).textContent = total || 0;
+                document.getElementById(`stroke-front-p${p}`).textContent = front || 0;
+                document.getElementById(`stroke-back-p${p}`).textContent = back || 0;
+            }
+        }
+
+        function resetStrokePlayScorecard() {
+            document.querySelectorAll('#strokeplay-scorecard input[type="number"]').forEach(input => input.value = '');
+            updateStrokePlayScorecard();
+        }
+
+        function recordStrokePlayRound() {
+            const data = loadData();
+            const league = data.strokePlayLeagues.find(l => l.id === currentStrokePlayLeagueId);
+
+            if (!league) return;
+
+            const playerScores = [];
+
+            for (let p = 1; p <= 4; p++) {
+                const name = document.getElementById(`stroke-p${p}`).value || `Player ${p}`;
+                const scores = [];
+                document.querySelectorAll(`#strokeplay-scorecard input[data-player="${p}"]`).forEach(input => {
+                    const val = input.value ? parseInt(input.value) : null;
+                    if (val !== null) scores.push(val);
+                });
+
+                if (scores.length < 18) {
+                    alert('Please fill in all 18 holes for all players');
+                    return;
+                }
+
+                const total = scores.reduce((a, b) => a + b, 0);
+                playerScores.push({ name, score: total, player: p });
+            }
+
+            playerScores.sort((a, b) => a.score - b.score);
+
+            const roundDetails = [];
+            playerScores.forEach((player, idx) => {
+                const points = STROKE_PLAY_POINTS[idx + 1] || 0;
+                updatePlayerStanding(league, player.name, points);
+                roundDetails.push({ name: player.name, score: player.score, rank: idx + 1, points });
+            });
+
+            league.history.push({
+                date: new Date().toLocaleDateString(),
+                results: roundDetails
+            });
+
+            saveData(data);
+
+            let message = 'Round recorded!\n\n';
+            roundDetails.forEach(r => {
+                message += `${r.rank}. ${r.name}: ${r.score} - ${r.points} pts\n`;
+            });
+            alert(message);
+            showStrokePlayDashboard();
+        }
+
+        function updatePlayerStanding(league, playerName, points) {
+            const existing = league.standings.find(p => p.name === playerName);
+            if (existing) {
+                existing.points += points;
+                existing.rounds += 1;
+            } else {
+                league.standings.push({ name: playerName, points, rounds: 1 });
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            loadData();
+            renderScrambleLeagues();
+            renderStrokePlayLeagues();
+        });
+    </script>
+</body>
+</html>
