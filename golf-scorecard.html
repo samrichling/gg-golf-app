@@ -94,54 +94,48 @@
             margin-bottom: 18px;
             padding: 6px 0;
             background: none;
-            color: #f5c518;
+            color: #8e8e93;
             border: none;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.92em;
+            font-size: 0.88em;
             font-weight: 500;
+            transition: color 0.15s;
         }
-        .back-button:hover { opacity: 0.75; }
+        .back-button:hover { color: #fff; }
 
         /* ── League list ─────────────────────────────────────────────────── */
         .league-grid {
             display: grid;
-            gap: 2px;
-            margin-bottom: 32px;
-            background: #1c1c1e;
-            border-radius: 12px;
-            overflow: hidden;
+            gap: 12px;
+            margin-bottom: 20px;
         }
         .league-card {
-            padding: 16px 18px;
+            padding: 22px 20px;
             background: #1c1c1e;
+            border-radius: 14px;
             cursor: pointer;
             transition: background 0.15s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .league-card:active { background: #2c2c2e; }
-        .league-card + .league-card { border-top: 1px solid #2c2c2e; }
-        .league-card h3 { color: #fff; font-size: 1em; font-weight: 600; margin-bottom: 3px; }
-        .league-card p { color: #8e8e93; font-size: 0.82em; margin: 0; }
-        .league-card::after { content: '›'; color: #48484a; font-size: 1.4em; font-weight: 300; }
+        .league-card h3 { color: #fff; font-size: 1.1em; font-weight: 700; margin-bottom: 6px; }
+        .league-card p { color: #8e8e93; font-size: 0.85em; margin: 0 0 2px; }
 
         .add-league-btn {
-            width: 100%;
-            padding: 16px 18px;
-            background: #1c1c1e;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 0;
+            background: none;
             border: none;
-            border-radius: 12px;
             cursor: pointer;
-            text-align: left;
-            color: #f5c518;
+            color: #8e8e93;
             font-family: inherit;
-            font-size: 0.95em;
-            font-weight: 600;
-            transition: background 0.15s;
+            font-size: 0.88em;
+            font-weight: 500;
+            transition: color 0.15s;
         }
-        .add-league-btn:active { background: #2c2c2e; }
+        .add-league-btn:hover { color: #fff; }
         .add-league-btn p { color: inherit; font-weight: inherit; font-size: inherit; }
 
         /* ── Dashboard ───────────────────────────────────────────────────── */
@@ -582,7 +576,7 @@
             <div id="scramble" class="tab-content active">
 
                 <div id="scramble-league-select" class="screen active">
-                    <h2 style="color:#1e3a8a;margin-bottom:20px;">Select or Create a League</h2>
+                    <h2 style="color:#fff;margin-bottom:20px;font-size:1.3em;font-weight:700;">Select a League</h2>
                     <div class="league-grid" id="scramble-leagues"></div>
                     <div class="add-league-btn" onclick="showCreateScrambleLeague()">
                         <p>+ Create New League</p>
@@ -594,7 +588,7 @@
                         <button class="back-button" style="margin-bottom:0;" onclick="showScrambleLeagueSelect()">← Back to Leagues</button>
                         <button class="back-button" style="margin-bottom:0;" onclick="showLeagueSettings()">⚙ Settings</button>
                     </div>
-                    <h1 id="scramble-dashboard-title" style="color:#f5c518;margin-bottom:25px;"></h1>
+                    <h1 id="scramble-dashboard-title" style="color:#fff;margin-bottom:20px;font-size:1.4em;font-weight:700;"></h1>
                     <div class="dashboard">
                         <div class="dashboard-section">
                             <h2>Standings</h2>
@@ -621,8 +615,8 @@
                 <!-- Course Selection Screen (Scramble) -->
                 <div id="scramble-course-select" class="screen">
                     <button class="back-button" onclick="showScrambleDashboard()">← Back to Dashboard</button>
-                    <h2 style="color:#1e3a8a;margin-bottom:6px;">Select a Course</h2>
-                    <p style="color:#6b7280;margin-bottom:20px;">Choose the course you're playing today</p>
+                    <h2 style="color:#fff;margin-bottom:6px;font-size:1.2em;font-weight:700;">Select a Course</h2>
+                    <p style="color:#8e8e93;margin-bottom:20px;font-size:0.9em;">Choose the course you're playing today</p>
                     <input type="text" class="course-search-box" id="scramble-course-search"
                         placeholder="🔍  Search courses..." oninput="renderCourseList('scramble')">
                     <div class="course-list" id="scramble-course-list"></div>
@@ -660,7 +654,7 @@
             <div id="strokeplay" class="tab-content">
 
                 <div id="strokeplay-league-select" class="screen active">
-                    <h2 style="color:#1e3a8a;margin-bottom:20px;">Select a League</h2>
+                    <h2 style="color:#fff;margin-bottom:20px;font-size:1.3em;font-weight:700;">Select a League</h2>
                     <div class="league-grid" id="strokeplay-leagues"></div>
                     <button class="add-league-btn" onclick="openCreateStrokePlayModal()">+ Create New League</button>
                 </div>
@@ -670,7 +664,7 @@
                         <button class="back-button" style="margin-bottom:0;" onclick="showStrokePlayLeagueSelect()">← Back to Leagues</button>
                         <button class="back-button" style="margin-bottom:0;" onclick="showStrokePlayLeagueSettings()">⚙ Settings</button>
                     </div>
-                    <h1 id="strokeplay-dashboard-title" style="color:#f5c518;margin-bottom:25px;"></h1>
+                    <h1 id="strokeplay-dashboard-title" style="color:#fff;margin-bottom:20px;font-size:1.4em;font-weight:700;"></h1>
                     <div class="dashboard">
                         <div class="dashboard-section">
                             <h2>Standings</h2>
@@ -696,8 +690,8 @@
                 <!-- Course Selection Screen (Stroke Play) -->
                 <div id="strokeplay-course-select" class="screen">
                     <button class="back-button" onclick="showStrokePlayDashboard()">← Back to Dashboard</button>
-                    <h2 style="color:#1e3a8a;margin-bottom:6px;">Select a Course</h2>
-                    <p style="color:#6b7280;margin-bottom:20px;">Choose the course you're playing today</p>
+                    <h2 style="color:#fff;margin-bottom:6px;font-size:1.2em;font-weight:700;">Select a Course</h2>
+                    <p style="color:#8e8e93;margin-bottom:20px;font-size:0.9em;">Choose the course you're playing today</p>
                     <input type="text" class="course-search-box" id="strokeplay-course-search"
                         placeholder="🔍  Search courses..." oninput="renderCourseList('strokeplay')">
                     <div class="course-list" id="strokeplay-course-list"></div>
@@ -1213,8 +1207,8 @@
             container.innerHTML = data.scrambleLeagues.map(league => `
                 <div class="league-card" onclick="selectScrambleLeague(${league.id})">
                     <h3>${league.name}</h3>
-                    <p><strong>${league.team1}</strong> vs <strong>${league.team2}</strong></p>
-                    <p style="margin-top:10px;font-size:0.9em;color:#059669;"><strong>${league.history.length}</strong> round(s) played</p>
+                    <p>${league.team1} vs ${league.team2}</p>
+                    <p>${league.history.length} round${league.history.length !== 1 ? 's' : ''} played</p>
                 </div>
             `).join('');
         }
@@ -1486,8 +1480,8 @@
             document.getElementById('strokeplay-leagues').innerHTML = data.strokePlayLeagues.map(league => `
                 <div class="league-card" onclick="selectStrokePlayLeague(${league.id})">
                     <h3>${league.name}</h3>
-                    <p><strong>Players:</strong> ${league.players.join(', ')}</p>
-                    <p style="margin-top:10px;font-size:0.9em;color:#059669;"><strong>${league.standings.length}</strong> round(s) played</p>
+                    <p>${league.players.join(', ')}</p>
+                    <p>${league.history.length} round${league.history.length !== 1 ? 's' : ''} played</p>
                 </div>
             `).join('');
         }
