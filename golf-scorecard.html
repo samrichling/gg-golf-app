@@ -739,7 +739,9 @@
         // ─── Data helpers ─────────────────────────────────────────────────────
         function loadData() {
             const saved = localStorage.getItem('golfData');
-            return saved ? JSON.parse(saved) : {
+            if (saved) return JSON.parse(saved);
+
+            const defaultData = {
                 scrambleLeagues: [{
                     id: Date.now(),
                     name: 'Mason & Sam vs Sean & Jonah',
@@ -756,6 +758,8 @@
                     history: []
                 }]
             };
+            saveData(defaultData);
+            return defaultData;
         }
 
         function saveData(data) {
