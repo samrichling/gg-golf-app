@@ -723,7 +723,8 @@
     <script>
         // ─── Default par (used as fallback) ───────────────────────────────────
         const DEFAULT_PAR = [4,4,3,5,4,3,4,5,4,4,3,4,5,4,3,4,4,5];
-        const API_BASE = 'https://api.opengolfapi.org/v1';
+        const API_SEARCH = 'https://api.opengolfapi.org/v1/courses/search';
+        const API_DETAIL = 'https://api.opengolfapi.org/api/v1/courses';
         let searchTimeout = null;
 
         const allPlayers = ['Mason', 'Sam', 'Sean', 'Jonah'];
@@ -822,7 +823,7 @@
             const container = document.getElementById(`${tab}-course-list`);
             const statusEl = document.getElementById(`${tab}-search-status`);
             try {
-                const res = await fetch(`${API_BASE}/courses/search?q=${encodeURIComponent(query)}`);
+                const res = await fetch(`${API_SEARCH}?q=${encodeURIComponent(query)}`);
                 if (!res.ok) throw new Error('API error');
                 const data = await res.json();
 
@@ -880,19 +881,17 @@
             const container = document.getElementById(`${tab}-course-list`);
             container.innerHTML = `<div class="no-courses-msg">Loading course data...</div>`;
             try {
-                const res = await fetch(`${API_BASE}/courses/${courseId}`);
+                const res = await fetch(`${API_DETAIL}/${courseId}`);
                 if (!res.ok) throw new Error();
                 const data = await res.json();
 
-                // Extract 18 hole pars — handle different response shapes
-                let holes = data.holes || data.tees?.[0]?.holes || [];
-                holes = holes.slice(0, 18);
+                // Hole data lives in holes_data, sorted by number
+                let holes = (data.holes_data || []).slice().sort((a, b) => a.number - b.number).slice(0, 18);
 
                 let par;
                 if (holes.length === 18) {
                     par = holes.map(h => h.par || 4);
                 } else if (holes.length === 9) {
-                    // 9-hole course — duplicate front 9
                     const front = holes.map(h => h.par || 4);
                     par = [...front, ...front];
                 } else {
@@ -901,7 +900,7 @@
 
                 activeCourse[tab] = {
                     id: courseId,
-                    name: data.name,
+                    name: data.course_name || data.name,
                     location: `${data.city || ''}${data.city && data.state ? ', ' : ''}${data.state || ''}`,
                     par
                 };
