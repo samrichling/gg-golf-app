@@ -1498,6 +1498,18 @@
                 par.push(val);
             }
             activeCourse[confirmParTab].par = par;
+
+            // Save corrected pars so they load correctly next time
+            const course = activeCourse[confirmParTab];
+            const custom = loadCustomCourses();
+            const existing = custom.find(c => c.id === course.id);
+            if (existing) {
+                existing.par = par;
+            } else {
+                custom.push({ id: course.id, name: course.name, location: course.location, par });
+            }
+            saveCustomCourses(custom);
+
             closeConfirmParModal();
             if (confirmParTab === 'scramble') showScrambleScorecard();
             else showStrokePlayScorecard();
