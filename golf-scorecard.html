@@ -886,6 +886,8 @@
                 const data = await res.json();
 
                 // Hole data lives in holes_data, sorted by number
+                console.log('API response keys:', Object.keys(data));
+                console.log('holes_data:', data.holes_data);
                 let holes = (data.holes_data || []).slice().sort((a, b) => a.number - b.number).slice(0, 18);
 
                 let par;
