@@ -745,6 +745,60 @@
     </div>
 
     <script>
+        // ─── Supabase ─────────────────────────────────────────────────────────
+        const SB_URL = 'https://owxrcwnqooequwkgyuwq.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93eHJjd25xb29lcXV3a2d5dXdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMTY2MzksImV4cCI6MjA5ODU5MjYzOX0.zK71ytfznn_hQs90MC9em-pj8hTyEwZAqE_Mndb-AnI';
+        const SB_HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' };
+
+        let appDataCache = null;
+        let customCoursesCache = null;
+
+        async function sbGet(table, query = '') {
+            const res = await fetch(`${SB_URL}/rest/v1/${table}${query}`, { headers: SB_HEADERS });
+            if (!res.ok) throw new Error(`${res.status}`);
+            return res.json();
+        }
+
+        async function sbUpsert(table, body) {
+            await fetch(`${SB_URL}/rest/v1/${table}`, { method: 'POST', headers: SB_HEADERS, body: JSON.stringify(body) });
+        }
+
+        async function initDB() {
+            // Load app state
+            try {
+                const rows = await sbGet('app_state', '?id=eq.main&select=data');
+                if (rows.length > 0) {
+                    appDataCache = rows[0].data;
+                    localStorage.setItem('golfData', JSON.stringify(appDataCache));
+                } else {
+                    appDataCache = initDefaultData();
+                    sbUpsert('app_state', { id: 'main', data: appDataCache });
+                }
+            } catch (e) {
+                appDataCache = initDefaultData();
+            }
+            // Load custom courses
+            try {
+                const rows = await sbGet('custom_courses', '?select=id,name,location,par');
+                customCoursesCache = rows.map(r => ({ ...r, par: r.par }));
+                localStorage.setItem('customCourses', JSON.stringify(customCoursesCache));
+            } catch (e) {
+                const saved = localStorage.getItem('customCourses');
+                customCoursesCache = saved ? JSON.parse(saved) : [];
+            }
+        }
+
+        function initDefaultData() {
+            const saved = localStorage.getItem('golfData');
+            if (saved) return JSON.parse(saved);
+            const d = {
+                scrambleLeagues: [{ id: Date.now(), name: 'Mason & Sam vs Sean & Jonah', team1: ['Mason','Sam'], team2: ['Sean','Jonah'], standings: [], history: [] }],
+                strokePlayLeagues: [{ id: Date.now()+1, name: 'Mini Majors', players: ['Mason','Sam','Sean','Jonah'], standings: [], history: [] }]
+            };
+            localStorage.setItem('golfData', JSON.stringify(d));
+            return d;
+        }
+
         // ─── Default par (used as fallback) ───────────────────────────────────
         const DEFAULT_PAR = [4,4,3,5,4,3,4,5,4,4,3,4,5,4,3,4,4,5];
         const API_SEARCH = 'https://api.opengolfapi.org/v1/courses/search';
@@ -762,41 +816,23 @@
 
         // ─── Data helpers ─────────────────────────────────────────────────────
         function loadData() {
-            const saved = localStorage.getItem('golfData');
-            if (saved) return JSON.parse(saved);
-
-            const defaultData = {
-                scrambleLeagues: [{
-                    id: Date.now(),
-                    name: 'Mason & Sam vs Sean & Jonah',
-                    team1: ['Mason', 'Sam'],
-                    team2: ['Sean', 'Jonah'],
-                    standings: [],
-                    history: []
-                }],
-                strokePlayLeagues: [{
-                    id: Date.now() + 1,
-                    name: 'Mini Majors',
-                    players: ['Mason', 'Sam', 'Sean', 'Jonah'],
-                    standings: [],
-                    history: []
-                }]
-            };
-            saveData(defaultData);
-            return defaultData;
+            return appDataCache || initDefaultData();
         }
 
         function saveData(data) {
+            appDataCache = data;
             localStorage.setItem('golfData', JSON.stringify(data));
+            sbUpsert('app_state', { id: 'main', data });
         }
 
         function loadCustomCourses() {
-            const saved = localStorage.getItem('customCourses');
-            return saved ? JSON.parse(saved) : [];
+            return customCoursesCache || [];
         }
 
         function saveCustomCourses(courses) {
+            customCoursesCache = courses;
             localStorage.setItem('customCourses', JSON.stringify(courses));
+            sbUpsert('custom_courses', courses);
         }
 
         // ─── Tab switching ────────────────────────────────────────────────────
@@ -1516,8 +1552,8 @@
         }
 
         // ─── Init ─────────────────────────────────────────────────────────────
-        window.addEventListener('load', () => {
-            loadData();
+        window.addEventListener('load', async () => {
+            await initDB();
             renderScrambleLeagues();
             renderStrokePlayLeagues();
         });
