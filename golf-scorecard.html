@@ -698,7 +698,8 @@
     <div id="confirm-par-modal" class="modal">
         <div class="modal-content">
             <h2 id="confirm-par-title">Confirm Hole Pars</h2>
-            <p style="color:#6b7280;margin-bottom:16px;font-size:0.95em;">Check that the pars look right and correct any that are wrong before starting.</p>
+            <p style="color:#6b7280;margin-bottom:12px;font-size:0.95em;">Check that the pars look right and correct any that are wrong before starting.</p>
+            <div id="confirm-par-warning" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:6px;padding:12px;margin-bottom:12px;color:#92400e;font-size:0.9em;"></div>
 
             <div class="par-section-label">Front 9</div>
             <div class="par-inputs-grid" id="confirm-front9"></div>
@@ -931,7 +932,8 @@
                     id: courseId,
                     name: data.course_name || data.name,
                     location: `${data.city || ''}${data.city && data.state ? ', ' : ''}${data.state || ''}`,
-                    par
+                    par,
+                    knownPar: data.par || null
                 };
 
                 openConfirmParModal(tab);
@@ -1458,6 +1460,17 @@
             }
             for (let i = 9; i < 18; i++) {
                 back.innerHTML += `<div><label>${i+1}</label><input type="number" id="cpar-${i}" min="3" max="6" value="${course.par[i]}" oninput="updateConfirmTotal()"></div>`;
+            }
+
+            // Check if hole pars match the course's known total par
+            const knownTotal = course.knownPar;
+            const holeSum = course.par.reduce((a, b) => a + b, 0);
+            const warningEl = document.getElementById('confirm-par-warning');
+            if (knownTotal && holeSum !== knownTotal) {
+                warningEl.innerHTML = `⚠️ The hole data doesn't add up — individual holes sum to <strong>${holeSum}</strong> but this course is <strong>Par ${knownTotal}</strong>. Please correct the holes below.`;
+                warningEl.style.display = 'block';
+            } else {
+                warningEl.style.display = 'none';
             }
 
             updateConfirmTotal();
