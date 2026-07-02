@@ -909,7 +909,7 @@
                 else showStrokePlayScorecard();
 
             } catch (e) {
-                container.innerHTML = `<div class="no-courses-msg">Could not load course data — try adding it manually below</div>`;
+                container.innerHTML = `<div class="no-courses-msg">Error: ${e.message || e}</div>`;
             }
         }
 
