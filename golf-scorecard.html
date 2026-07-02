@@ -462,6 +462,73 @@
             margin-bottom: 20px;
         }
 
+        /* Score cell + highlighting */
+        .score-cell {
+            cursor: pointer;
+            min-width: 48px;
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #374151;
+            user-select: none;
+            transition: background 0.15s;
+        }
+        .score-cell:active { opacity: 0.6; }
+        .hole-win  { background: #bbf7d0 !important; color: #065f46; }
+        .hole-tie  { background: #e5e7eb !important; color: #6b7280; }
+
+        /* Running tally */
+        .hole-tally {
+            text-align: center;
+            font-size: 1.05em;
+            font-weight: 700;
+            color: #1e3a8a;
+            padding: 10px 16px;
+            background: #eff6ff;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            min-height: 42px;
+        }
+
+        /* Keypad overlay */
+        .keypad-overlay {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            border-top: 3px solid #e5e7eb;
+            padding: 16px 16px 24px;
+            z-index: 3000;
+            box-shadow: 0 -6px 30px rgba(0,0,0,0.18);
+        }
+        .keypad-overlay.active { display: block; }
+        .keypad-label {
+            text-align: center;
+            font-size: 0.9em;
+            color: #6b7280;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        .keypad-btn {
+            padding: 20px 10px;
+            font-size: 1.6em;
+            font-weight: 700;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .keypad-btn:active { background: #d1d5db; transform: scale(0.95); }
+        .keypad-clear { background: #fee2e2; color: #dc2626; font-size: 1em; }
+        .keypad-close { background: #1e3a8a; color: white; font-size: 1em; }
+
         .no-courses-msg {
             text-align: center;
             color: #9ca3af;
@@ -535,6 +602,7 @@
                 <div id="scramble-scorecard" class="screen">
                     <button class="back-button" onclick="showScrambleCourseSelect()">← Change Course</button>
                     <div id="scramble-course-badge"></div>
+                    <div class="hole-tally" id="scramble-tally"></div>
 
                     <div class="player-inputs">
                         <div class="input-group">
@@ -691,6 +759,25 @@
                 <button class="btn-secondary" onclick="closeCreateLeagueModal()">Cancel</button>
                 <button class="btn-primary" onclick="createScrambleLeague()">Create League</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Keypad Overlay -->
+    <div class="keypad-overlay" id="keypad-overlay" onclick="handleKeypadOverlayClick(event)">
+        <div class="keypad-label" id="keypad-label">Enter score</div>
+        <div class="keypad-grid">
+            <button class="keypad-btn" onclick="keypadInput(1)">1</button>
+            <button class="keypad-btn" onclick="keypadInput(2)">2</button>
+            <button class="keypad-btn" onclick="keypadInput(3)">3</button>
+            <button class="keypad-btn" onclick="keypadInput(4)">4</button>
+            <button class="keypad-btn" onclick="keypadInput(5)">5</button>
+            <button class="keypad-btn" onclick="keypadInput(6)">6</button>
+            <button class="keypad-btn" onclick="keypadInput(7)">7</button>
+            <button class="keypad-btn" onclick="keypadInput(8)">8</button>
+            <button class="keypad-btn" onclick="keypadInput(9)">9</button>
+            <button class="keypad-btn keypad-clear" onclick="keypadClear()">Clear</button>
+            <button class="keypad-btn" style="background:#f3f4f6;color:#374151;" onclick="keypadInput(10)">10</button>
+            <button class="keypad-btn keypad-close" onclick="closeKeypad()">Done</button>
         </div>
     </div>
 
@@ -1150,8 +1237,8 @@
                 row.innerHTML = `
                     <td>${i+1}</td>
                     <td>${par[i]}</td>
-                    <td><input type="number" class="hole-input" data-hole="${i}" data-team="1" onchange="updateScramblesScorecard()"></td>
-                    <td><input type="number" class="hole-input" data-hole="${i}" data-team="2" onchange="updateScramblesScorecard()"></td>
+                    <td class="score-cell" data-hole="${i}" data-team="1" onclick="openKeypad(this)">—</td>
+                    <td class="score-cell" data-hole="${i}" data-team="2" onclick="openKeypad(this)">—</td>
                 `;
                 tbody.appendChild(row);
             }
@@ -1179,8 +1266,29 @@
 
         function updateScramblesScorecard() {
             const t1 = [], t2 = [];
-            document.querySelectorAll('#scramble-scorecard input[data-team="1"]').forEach(i => { if (i.value) t1.push(parseInt(i.value)); });
-            document.querySelectorAll('#scramble-scorecard input[data-team="2"]').forEach(i => { if (i.value) t2.push(parseInt(i.value)); });
+            let t1Holes = 0, t2Holes = 0, tiedHoles = 0, holesPlayed = 0;
+
+            for (let i = 0; i < 18; i++) {
+                const c1 = document.querySelector(`#scramble-scorecard-body .score-cell[data-hole="${i}"][data-team="1"]`);
+                const c2 = document.querySelector(`#scramble-scorecard-body .score-cell[data-hole="${i}"][data-team="2"]`);
+                if (!c1 || !c2) continue;
+
+                const v1 = c1.dataset.value ? parseInt(c1.dataset.value) : null;
+                const v2 = c2.dataset.value ? parseInt(c2.dataset.value) : null;
+
+                if (v1 !== null) t1.push(v1);
+                if (v2 !== null) t2.push(v2);
+
+                c1.classList.remove('hole-win','hole-tie');
+                c2.classList.remove('hole-win','hole-tie');
+
+                if (v1 !== null && v2 !== null) {
+                    holesPlayed++;
+                    if (v1 < v2)      { c1.classList.add('hole-win'); t1Holes++; }
+                    else if (v2 < v1) { c2.classList.add('hole-win'); t2Holes++; }
+                    else              { c1.classList.add('hole-tie'); c2.classList.add('hole-tie'); tiedHoles++; }
+                }
+            }
 
             document.getElementById('scramble-front-t1').textContent = t1.slice(0,9).reduce((a,b)=>a+b,0)||0;
             document.getElementById('scramble-front-t2').textContent = t2.slice(0,9).reduce((a,b)=>a+b,0)||0;
@@ -1188,10 +1296,25 @@
             document.getElementById('scramble-back-t2').textContent  = t2.slice(9,18).reduce((a,b)=>a+b,0)||0;
             document.getElementById('scramble-total-t1').textContent = t1.reduce((a,b)=>a+b,0)||0;
             document.getElementById('scramble-total-t2').textContent = t2.reduce((a,b)=>a+b,0)||0;
+
+            const tally = document.getElementById('scramble-tally');
+            if (holesPlayed === 0) { tally.textContent = ''; return; }
+            const t1Name = document.getElementById('scramble-sc-team1-header').textContent;
+            const t2Name = document.getElementById('scramble-sc-team2-header').textContent;
+            const diff = Math.abs(t1Holes - t2Holes);
+            if (diff === 0) tally.textContent = `All square thru ${holesPlayed}`;
+            else {
+                const leader = t1Holes > t2Holes ? t1Name : t2Name;
+                tally.textContent = `${leader} leads ${Math.max(t1Holes,t2Holes)}-${Math.min(t1Holes,t2Holes)} thru ${holesPlayed}`;
+            }
         }
 
         function resetScrambleScorecard() {
-            document.querySelectorAll('#scramble-scorecard input[type="number"]').forEach(i => i.value = '');
+            document.querySelectorAll('#scramble-scorecard-body .score-cell').forEach(c => {
+                delete c.dataset.value;
+                c.textContent = '—';
+                c.classList.remove('hole-win','hole-tie');
+            });
             updateScramblesScorecard();
         }
 
@@ -1201,8 +1324,8 @@
             if (!league) return;
 
             const t1Scores = [], t2Scores = [];
-            document.querySelectorAll('#scramble-scorecard input[data-team="1"]').forEach(i => { if (i.value) t1Scores.push(parseInt(i.value)); });
-            document.querySelectorAll('#scramble-scorecard input[data-team="2"]').forEach(i => { if (i.value) t2Scores.push(parseInt(i.value)); });
+            document.querySelectorAll('#scramble-scorecard-body .score-cell[data-team="1"]').forEach(c => { if (c.dataset.value) t1Scores.push(parseInt(c.dataset.value)); });
+            document.querySelectorAll('#scramble-scorecard-body .score-cell[data-team="2"]').forEach(c => { if (c.dataset.value) t2Scores.push(parseInt(c.dataset.value)); });
 
             if (t1Scores.length < 18 || t2Scores.length < 18) { alert('Please fill in all 18 holes'); return; }
 
@@ -1476,6 +1599,44 @@
             const existing = league.standings.find(p => p.name === playerName);
             if (existing) { existing.points += points; existing.rounds += 1; }
             else league.standings.push({ name: playerName, points, rounds: 1 });
+        }
+
+        // ─── Keypad ───────────────────────────────────────────────────────────
+        let activeScoreCell = null;
+
+        function openKeypad(cell) {
+            activeScoreCell = cell;
+            const hole = parseInt(cell.dataset.hole) + 1;
+            const team = cell.dataset.team === '1'
+                ? document.getElementById('scramble-sc-team1-header').textContent
+                : document.getElementById('scramble-sc-team2-header').textContent;
+            document.getElementById('keypad-label').textContent = `Hole ${hole} — ${team}`;
+            document.getElementById('keypad-overlay').classList.add('active');
+        }
+
+        function closeKeypad() {
+            document.getElementById('keypad-overlay').classList.remove('active');
+            activeScoreCell = null;
+        }
+
+        function keypadInput(n) {
+            if (!activeScoreCell) return;
+            activeScoreCell.dataset.value = n;
+            activeScoreCell.textContent = n;
+            closeKeypad();
+            updateScramblesScorecard();
+        }
+
+        function keypadClear() {
+            if (!activeScoreCell) return;
+            delete activeScoreCell.dataset.value;
+            activeScoreCell.textContent = '—';
+            closeKeypad();
+            updateScramblesScorecard();
+        }
+
+        function handleKeypadOverlayClick(e) {
+            if (e.target === document.getElementById('keypad-overlay')) closeKeypad();
         }
 
         // ─── Confirm Par Modal ────────────────────────────────────────────────
